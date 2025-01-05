@@ -9,6 +9,7 @@ import { FormatNumber } from "src/components/common/format"
 import { CustomBox }    from "src/components/core/CustomBox"
 import { PieChart }     from "src/components/core/chart/PieChart"
 import { Color }        from "src/definition/color"
+import { SpecialRate }  from "./special"
 
 import { AppDispatch, RootState }   from "src/store"
 
@@ -94,6 +95,10 @@ export const Dashboard = () => {
     const [days, setDays] = useState(rate.days)
     const [audirrAverage, setAudirrAverage] = useState(0)
     const [irraudAverage, setIrraudAverage] = useState(0)
+
+    //---Special Rates
+    const [audirrSpecial, setAudirrSpecial] = useState(rate.audRates.audirrSpecial)
+    const [irraudSpecial, setIrraudSpecial] = useState(rate.audRates.irraudSpecial)
 
     //---Competitors
     const [audirrMoneyMex, setAudirrMoneyMex] = useState(competitor.competitorsRate.audirrMoneyMex)
@@ -256,8 +261,8 @@ export const Dashboard = () => {
                 <RowContainer>
                     <CustomBox>
             {/* ---Assets */}
-                    <BoxContainer style={{width: "60vw", marginLeft: "1vw"}}>
-            {/* ---Show Equal Balance */}
+                        <BoxContainer style={{width: "60vw", marginLeft: "1vw"}}>
+                {/* ---Show Equal Balance */}
                             <CustomBox>
                                 <BoxHeader style={{width: "10vw", marginLeft: "1vw"}}>
                                     <YellowLine>
@@ -276,8 +281,8 @@ export const Dashboard = () => {
                                         </Content>
                                     </CustomBox>
                                 </BoxContent>
-                            </CustomBox>
-            {/* ---Show Chart */}
+                                </CustomBox>
+                {/* ---Show Chart */}
                             <CustomBox>
                                 <BoxContent style={{width: "20vw", marginLeft: "5vw"}}>
                                     <PieChart
@@ -286,7 +291,7 @@ export const Dashboard = () => {
                                     />
                                 </BoxContent>
                             </CustomBox>
-            {/* ---Show Equal Balance */}
+                {/* ---Show Equal Balance */}
                             <CustomBox>
                                 <BoxContent style={{width: "15vw", marginLeft: "1vw", justifyContent: "flex-start", marginTop: "1vw"}}>
                                     <div style={{ width: "10px", height: "10px", backgroundColor: audColor}}></div>
@@ -345,293 +350,41 @@ export const Dashboard = () => {
                             </CustomBox>
                         </BoxContainer>
 
-        {/* ---Competitors */}
+        {/* ---Special rates */}
                         <BoxContainer style={{width: "60vw", marginLeft: "1vw"}}>
-        {/* ---Show Competitors Rates */}
+            {/* ---AUD / IRR Special rates */}
                             <CustomBox>
                                 <BoxName style={{marginTop: "2vw", marginBottom: "1vw"}}>
-                                    Competitors
+                                    Special rates
                                 </BoxName>
-                                <BoxHeader style={{width: "19vw", marginLeft: "10vw"}}>
+                                <BoxHeader style={{width: "20vw", marginLeft: "1vw"}}>
                                     <YellowLine>
-                                        <Header style={{width: "7vw", fontSize: "12px"}}>
+                                        <Header style={{width: "5vw", fontSize: "12px"}}>
                                             AUD / IRR
                                         </Header>
                                     </YellowLine>
-                                    <YellowLine>
-                                        <Header style={{width: "7vw", fontSize: "12px"}}>
-                                            IRR / AUD
-                                        </Header>
-                                    </YellowLine>
                                 </BoxHeader>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        MoneyMex
-                                    </Title>
-                                    <InputNumber
-                                        size="small"
-                                        variant="filled"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrMoneyMex,0)}
-                                        onChange={(value)=>{
-                                            setAudirrMoneyMex(value)
-                                        }}
-                                        onKeyDown={MoneyMexaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        size="small"
-                                        variant="filled"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudMoneyMex,0)}
-                                        onChange={(value)=>{
-                                            setIrraudMoneyMex(value)
-                                        }}
-                                        onKeyDown={MoneyMexirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Rosecap
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrRosecap,0)}
-                                        onChange={(value)=>{
-                                            setAudirrRosecap(value)
-                                        }}
-                                        onKeyDown={RosecpaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudRosecap,0)}
-                                        onChange={(value)=>{
-                                            setIrraudRosecap(value)
-                                        }}
-                                        onKeyDown={RosecpirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Seyhoon
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrSeyhoon,0)}
-                                        onChange={(value)=>{
-                                            setAudirrSeyhoon(value)
-                                        }}
-                                        onKeyDown={SeyhoonaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudSeyhoon,0)}
-                                        onChange={(value)=>{
-                                            setIrraudSeyhoon(value)
-                                        }}
-                                        onKeyDown={SeyhoonirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Javadi
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrJavadi,0)}
-                                        onChange={(value)=>{
-                                            setAudirrJavadi(value)
-                                        }}
-                                        onKeyDown={JavadiaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudJavadi,0)}
-                                        onChange={(value)=>{
-                                            setIrraudJavadi(value)
-                                        }}
-                                        onKeyDown={JavadiirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Express
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrExpress,0)}
-                                        onChange={(value)=>{
-                                            setAudirrExpress(value)
-                                        }}
-                                        onKeyDown={ExpressaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudExpress,0)}
-                                        onChange={(value)=>{
-                                            setIrraudExpress(value)
-                                        }}
-                                        onKeyDown={ExpressirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Kangroos
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrKangroos,0)}
-                                        onChange={(value)=>{
-                                            setAudirrKangroos(value)
-                                        }}
-                                        onKeyDown={KangroosaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudKangroos,0)}
-                                        onChange={(value)=>{
-                                            setIrraudKangroos(value)
-                                        }}
-                                        onKeyDown={KangroosirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Roomi
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrRoomi,0)}
-                                        onChange={(value)=>{
-                                            setAudirrRoomi(value)
-                                        }}
-                                        onKeyDown={RoomiaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudRoomi,0)}
-                                        onChange={(value)=>{
-                                            setIrraudRoomi(value)
-                                        }}
-                                        onKeyDown={RoomiirraudHandler}
-                                    />
-                                </BoxContent>
-                                <BoxContent style={{width: "28vw", marginLeft: "1vw", marginBottom: "1vw"}}>
-                                    <Title style={{width: "3vw"}}>
-                                        Afshar
-                                    </Title>
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(audirrAfshar,0)}
-                                        onChange={(value)=>{
-                                            setAudirrAfshar(value)
-                                        }}
-                                        onKeyDown={AfsharaudirrHandler}
-                                    />
-                                    <InputNumber
-                                        variant="filled"
-                                        size="small"
-                                        style={{
-                                            width: "7vw",
-                                        }}
-                                        min={0}
-                                        value={FormatNumber(irraudAfshar,0)}
-                                        onChange={(value)=>{
-                                            setIrraudAfshar(value)
-                                        }}
-                                        onKeyDown={AfsharirraudHandler}
+                                <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
+                                    <SpecialRate
+                                        fixedRate={audirrRate}
+                                        dataSource={audirrSpecial}
                                     />
                                 </BoxContent>
                             </CustomBox>
-            {/* ---Show Max Market Rates */}
+            {/* ---IRR / AUD Special rates */}
                             <CustomBox>
-                                <BoxContent style={{width: "20vw", marginLeft: "1vw", marginRight: "1vw", justifyContent: "flex-start"}}>
+                                <BoxHeader style={{width: "15vw", marginRight: "10vw", marginTop: "4vw"}}>
                                     <YellowLine>
-                                        <Header style={{width: "5vw", fontSize: "10px"}}>
-                                            Max AUD / IRR
+                                        <Header style={{width: "5vw", fontSize: "12px"}}>
+                                            IRR /AUD
                                         </Header>
                                     </YellowLine>
-                                        <Content style={{fontSize: "10px", marginLeft: "1vw"}}>
-                                            {audirrMax?.toLocaleString("en-us")}
-                                        </Content>
-                                </BoxContent>
-                                <BoxContent style={{width: "20vw", marginLeft: "1vw", marginRight: "2vw", marginBottom: "10vw", justifyContent: "flex-start"}}>
-                                    <Header style={{width: "5vw", fontSize: "10px"}}>
-                                        Min IRR / AUD
-                                    </Header>
-                                    <Content style={{fontSize: "10px", marginLeft: "1vw"}}>
-                                        {irraudMin?.toLocaleString("en-us")}
-                                    </Content>
+                                </BoxHeader>
+                                <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
+                                    <SpecialRate
+                                        fixedRate={irraudRate}
+                                        dataSource={irraudSpecial}
+                                    />
                                 </BoxContent>
                             </CustomBox>
                         </BoxContainer>
@@ -742,6 +495,296 @@ export const Dashboard = () => {
                             </CustomBox>
                         </BoxContainer>
 
+        {/* ---Competitors */}
+                        <BoxContainer style={{width: "36vw", marginRight: "1vw"}}>
+        {/* ---Show Competitors Rates */}
+                            <CustomBox>
+                                <BoxName style={{marginTop: "2vw", marginBottom: "1vw"}}>
+                                    Competitors
+                                </BoxName>
+                                <BoxHeader style={{width: "13vw", marginLeft: "8vw"}}>
+                                    <YellowLine>
+                                        <Header style={{width: "5vw", fontSize: "12px"}}>
+                                            AUD / IRR
+                                        </Header>
+                                    </YellowLine>
+                                    <YellowLine>
+                                        <Header style={{width: "5vw", fontSize: "12px"}}>
+                                            IRR / AUD
+                                        </Header>
+                                    </YellowLine>
+                                </BoxHeader>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        MoneyMex
+                                    </Title>
+                                    <InputNumber
+                                        size="small"
+                                        variant="filled"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrMoneyMex,0)}
+                                        onChange={(value)=>{
+                                            setAudirrMoneyMex(value)
+                                        }}
+                                        onKeyDown={MoneyMexaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        size="small"
+                                        variant="filled"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudMoneyMex,0)}
+                                        onChange={(value)=>{
+                                            setIrraudMoneyMex(value)
+                                        }}
+                                        onKeyDown={MoneyMexirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Rosecap
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrRosecap,0)}
+                                        onChange={(value)=>{
+                                            setAudirrRosecap(value)
+                                        }}
+                                        onKeyDown={RosecpaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudRosecap,0)}
+                                        onChange={(value)=>{
+                                            setIrraudRosecap(value)
+                                        }}
+                                        onKeyDown={RosecpirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Seyhoon
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrSeyhoon,0)}
+                                        onChange={(value)=>{
+                                            setAudirrSeyhoon(value)
+                                        }}
+                                        onKeyDown={SeyhoonaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudSeyhoon,0)}
+                                        onChange={(value)=>{
+                                            setIrraudSeyhoon(value)
+                                        }}
+                                        onKeyDown={SeyhoonirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Javadi
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrJavadi,0)}
+                                        onChange={(value)=>{
+                                            setAudirrJavadi(value)
+                                        }}
+                                        onKeyDown={JavadiaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudJavadi,0)}
+                                        onChange={(value)=>{
+                                            setIrraudJavadi(value)
+                                        }}
+                                        onKeyDown={JavadiirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Express
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrExpress,0)}
+                                        onChange={(value)=>{
+                                            setAudirrExpress(value)
+                                        }}
+                                        onKeyDown={ExpressaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudExpress,0)}
+                                        onChange={(value)=>{
+                                            setIrraudExpress(value)
+                                        }}
+                                        onKeyDown={ExpressirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Kangroos
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrKangroos,0)}
+                                        onChange={(value)=>{
+                                            setAudirrKangroos(value)
+                                        }}
+                                        onKeyDown={KangroosaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudKangroos,0)}
+                                        onChange={(value)=>{
+                                            setIrraudKangroos(value)
+                                        }}
+                                        onKeyDown={KangroosirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Roomi
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrRoomi,0)}
+                                        onChange={(value)=>{
+                                            setAudirrRoomi(value)
+                                        }}
+                                        onKeyDown={RoomiaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudRoomi,0)}
+                                        onChange={(value)=>{
+                                            setIrraudRoomi(value)
+                                        }}
+                                        onKeyDown={RoomiirraudHandler}
+                                    />
+                                </BoxContent>
+                                <BoxContent style={{width: "20vw", marginLeft: "1vw", marginBottom: "1vw"}}>
+                                    <Title style={{width: "3vw"}}>
+                                        Afshar
+                                    </Title>
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(audirrAfshar,0)}
+                                        onChange={(value)=>{
+                                            setAudirrAfshar(value)
+                                        }}
+                                        onKeyDown={AfsharaudirrHandler}
+                                    />
+                                    <InputNumber
+                                        variant="filled"
+                                        size="small"
+                                        style={{
+                                            width: "5vw",
+                                        }}
+                                        min={0}
+                                        value={FormatNumber(irraudAfshar,0)}
+                                        onChange={(value)=>{
+                                            setIrraudAfshar(value)
+                                        }}
+                                        onKeyDown={AfsharirraudHandler}
+                                    />
+                                </BoxContent>
+                            </CustomBox>
+            {/* ---Show Max Market Rates */}
+                            <CustomBox>
+                                <BoxContent style={{width: "15vw", marginLeft: "3vw", marginRight: "1vw", justifyContent: "flex-start"}}>
+                                    <YellowLine>
+                                        <Header style={{width: "5vw", fontSize: "10px"}}>
+                                            Max AUD / IRR
+                                        </Header>
+                                    </YellowLine>
+                                        <Content style={{fontSize: "10px", marginLeft: "1vw"}}>
+                                            {audirrMax?.toLocaleString("en-us")}
+                                        </Content>
+                                </BoxContent>
+                                <BoxContent style={{width: "15vw", marginLeft: "3vw", marginRight: "2vw", marginBottom: "10vw", justifyContent: "flex-start"}}>
+                                    <Header style={{width: "5vw", fontSize: "10px"}}>
+                                        Min IRR / AUD
+                                    </Header>
+                                    <Content style={{fontSize: "10px", marginLeft: "1vw"}}>
+                                        {irraudMin?.toLocaleString("en-us")}
+                                    </Content>
+                                </BoxContent>
+                            </CustomBox>
+                        </BoxContainer>
                     </CustomBox>
                 </RowContainer>
             </div>

@@ -1,3 +1,6 @@
+
+
+
 import { createAction } from "@reduxjs/toolkit"
 
 import { RateInterface } from "src/definition/interfaces"
@@ -30,7 +33,11 @@ export const updateirrtrlRate = createAction<RateInterface>("irrRates/irrtrlRate
 export const updateusdirrRate = createAction<RateInterface>("irrRates/usdirrRate")
 export const updateirrusdRate = createAction<RateInterface>("irrRates/irrusdRate")
 
-//---Update SuggestiomRates
+//---Update Special Rates
+export const updateaudirrSpecial = createAction<RateInterface>("specialRats/audirrSpecial")
+export const updateirraudSpecial = createAction<RateInterface>("specialRats/irraudSpecial")
+
+//---Update Suggestion Rates
 export const updateaudirrSell = createAction<RateInterface>("suggestionRates/audirrSell")
 export const updateirraudSell = createAction<RateInterface>("suggestionRates/irraudSell")
 export const updateaudirrAED = createAction<RateInterface>("suggestionRates/audirrAED")

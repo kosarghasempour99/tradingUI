@@ -3,6 +3,12 @@ import { createReducer } from "@reduxjs/toolkit"
 import * as actions from "../actions/rates"
 
 //------------------------------
+const AUD_RATES = "audRates/"
+const IRR_RATES = "irrRates/"
+const SPECIAL_RATS = "specialRats/"
+const SUGGESTION_RATES = "suggestionRates/"
+
+//------------------------------
 //---Initial State
 //------------------------------
 const initialState = {
@@ -18,7 +24,10 @@ const initialState = {
         audeurRate: 0,
         euraudRate: 0,
         audusdRate: 0,
-        usdaudRate: 0
+        usdaudRate: 0,
+
+        audirrSpecial: [],
+        irraudSpecial: []
     },
     
     irrRates:{
@@ -45,36 +54,28 @@ const initialState = {
 }
 
 //------------------------------
+const UpdateHandler = (prefix, targetKey, action) => {
+    if (action.type.startsWith(prefix)) {
+        const key = action.type.split("/")[1]
+        if (key in targetKey) {
+            targetKey[key] = action.payload
+        }
+    }
+}
+
+//------------------------------
 //---Create Reducer
 //------------------------------
 export default createReducer(initialState, (builder) => {
     builder
         .addCase(actions.updateDays, (state, action) => { state.days = action.payload })
-        .addMatcher(
-            (action) => action.type.startsWith("audRates/"),
-            (state, action) => {
-                const audRateKey = action.type.split("/")[1]
-                if (audRateKey in state.audRates) {
-                   state.audRates[audRateKey] = action.payload 
-                }
-            }
-        )
-        .addMatcher(
-            (action) => action.type.startsWith("irrRates/"),
-            (state, action) => {
-                const irrRateKey = action.type.split("/")[1]
-                if (irrRateKey in state.irrRates) {
-                   state.irrRates[irrRateKey] = action.payload 
-                }
-            }
-        )
-        .addMatcher(
-            (action) => action.type.startsWith("suggestionRates/"),
-            (state, action) => {
-                const suggestionRateKey = action.type.split("/")[1]
-                if (suggestionRateKey in state.suggestionRates) {
-                   state.suggestionRates[suggestionRateKey] = action.payload 
-                }
-            }
-        )
+
+        .addMatcher((action) => action.type.startsWith(AUD_RATES),
+            (state, action) => UpdateHandler(AUD_RATES, state.audRates, action))
+
+        .addMatcher((action) => action.type.startsWith(IRR_RATES),
+            (state, action) => UpdateHandler(IRR_RATES, state.irrRates, action))
+
+        .addMatcher((action) => action.type.startsWith(SUGGESTION_RATES),
+            (state, action) => UpdateHandler(SUGGESTION_RATES, state.suggestionRates, action))
 })

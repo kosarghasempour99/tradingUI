@@ -26,6 +26,8 @@ import {
     updatetrlirrRate, updateirrtrlRate,
     updateusdirrRate, updateirrusdRate,
 
+    updateaudirrSpecial, updateirraudSpecial,
+
     updateaudirrSell, updateirraudSell,
     updateaudirrAED, updateirraudAED,
     updateaudirrMarket, updateirraudMarket
@@ -74,6 +76,10 @@ export const Rate = () => {
     const [irrtrlRate, setIrrtrlRate] = useState(rate.irrRates.irrtrlRate)
     const [usdirrRate, setUsdirrRate] = useState(rate.irrRates.usdirrRate)
     const [irrusdRate, setIrrusdRate] = useState(rate.irrRates.irrusdRate)
+
+    //---Special Rates
+    const [audirrSpecial, setAudirrSpecial] = useState(rate.audRates.audirrSpecial)
+    const [irraudSpecial, setIrraudSpecial] = useState(rate.audRates.irraudSpecial)
 
     //---Suggestion
     const [audirrSell, setAudirrSell] = useState(rate.suggestionRates.audirrSell)
@@ -145,6 +151,32 @@ export const Rate = () => {
         dispatch(updateaudirrAED(audirrAED))
         dispatch(updateirraudAED(irraudAED))
     }, [aedaudRate, audaedRate, aedirrRate, irraedRate])
+
+    //------------------------------
+    //---Special Rates
+    //------------------------------
+    const audirrSpecialHandler = (data: {amount: number, over: number}) => {
+        const specialRate = data.map(({ amount, over }) => ({ amount, over }))
+        setAudirrSpecial(specialRate)
+        dispatch(updateaudirrSpecial(audirrSpecial))
+
+        //------------------------------
+        //---Save AUD/IRR Special Rates
+        //------------------------------
+
+    }
+
+    const irraudSpecialHandler = (data: {amount: number, over: number}) => {
+        const specialRate = data.map(({ amount, over }) => ({ amount, over }))
+        setIrraudSpecial(specialRate)
+        dispatch(updateirraudSpecial(irraudSpecial))
+
+        //------------------------------
+        //---Save IRR/AUD Special Rates
+        //------------------------------
+
+    }
+
     //------------------------------
     return (
         <>
@@ -202,7 +234,9 @@ export const Rate = () => {
                                         <Header>Special Rate</Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <SpecialRate/>
+                                <SpecialRate
+                                    onChange={audirrSpecialHandler}
+                                />
                             </CustomBox>
                         </BoxContainer>
                     </CustomBox>
@@ -247,19 +281,28 @@ export const Rate = () => {
                                     <Title>Based on AED</Title>
                                     <Content>{FormatNumber(irraudAED,0)}</Content>
                                 </BoxContent>
+
+                                <BoxHeader style={{width: "15vw", marginLeft: "1vw", marginTop: "4vw"}}>
+                                    <YellowLine>
+                                        <Header>Special Rate</Header>
+                                    </YellowLine>
+                                </BoxHeader>
+                                <SpecialRate
+                                    onChange={irraudSpecialHandler}
+                                />
                             </CustomBox>
                         </BoxContainer>
                     </CustomBox>
                     <CustomBox>
         {/* ---AUD Rates */}
-                        <BoxContainer style={{width: "32vw"}}>
+                        <BoxContainer style={{width: "27vw"}}>
                             <CustomBox>
-                                <BoxHeader style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxHeader style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <YellowLine>
                                         <Header>AUD Rates</Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             AUD / AED
@@ -275,7 +318,7 @@ export const Rate = () => {
                                             onKeyDown={audaedHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -288,7 +331,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             AUD / CAD
@@ -304,7 +347,7 @@ export const Rate = () => {
                                             onKeyDown={audcadHandler}
                                         />
                                    </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -317,7 +360,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             AUD / EUR
@@ -333,7 +376,7 @@ export const Rate = () => {
                                             onKeyDown={audeurHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -346,7 +389,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw", marginBottom: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw", marginBottom: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             AUD / USD
@@ -362,7 +405,7 @@ export const Rate = () => {
                                             onKeyDown={audusdHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -378,14 +421,14 @@ export const Rate = () => {
                             </CustomBox>
                         </BoxContainer>
         {/* ---IRR Rates */}
-                         <BoxContainer style={{width: "32vw"}}>
+                         <BoxContainer style={{width: "27vw"}}>
                             <CustomBox>
-                                <BoxHeader style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxHeader style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <YellowLine>
                                         <Header>IRR Rates</Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             IRR / AED
@@ -401,7 +444,7 @@ export const Rate = () => {
                                             onKeyDown={irraedHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -414,7 +457,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             IRR / CAD
@@ -430,7 +473,7 @@ export const Rate = () => {
                                             onKeyDown={irrcadHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -443,7 +486,7 @@ export const Rate = () => {
                                         />
                                    </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             IRR / EUR
@@ -459,7 +502,7 @@ export const Rate = () => {
                                             onKeyDown={irreurHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -472,7 +515,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             IRR / TRL
@@ -488,7 +531,7 @@ export const Rate = () => {
                                             onKeyDown={irrtrlHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
@@ -501,7 +544,7 @@ export const Rate = () => {
                                         />
                                     </BoxContent>
                                 </BoxContent>
-                                <BoxContent style={{width: "30vw", marginLeft: "1vw", marginTop: "1vw", marginBottom: "1vw"}}>
+                                <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw", marginBottom: "1vw"}}>
                                     <BoxContent style={{width: "13vw"}}>
                                         <Title style={{width: "5vw"}}>
                                             IRR / USD
@@ -517,7 +560,7 @@ export const Rate = () => {
                                             onKeyDown={irrusdHandler}
                                         />
                                     </BoxContent>
-                                    <BoxContent style={{width: "13vw"}}>
+                                    <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
                                             style={{width: "7vw"}}
