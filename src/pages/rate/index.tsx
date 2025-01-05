@@ -45,6 +45,12 @@ import {
 } from "../style"
 
 //------------------------------
+interface SpecilaRateType {
+    amount: number
+    over: number
+  }
+
+//------------------------------
 //---Rate
 //------------------------------
 export const Rate = () => {
@@ -78,8 +84,8 @@ export const Rate = () => {
     const [irrusdRate, setIrrusdRate] = useState(rate.irrRates.irrusdRate)
 
     //---Special Rates
-    const [audirrSpecial, setAudirrSpecial] = useState(rate.audRates.audirrSpecial)
-    const [irraudSpecial, setIrraudSpecial] = useState(rate.audRates.irraudSpecial)
+    const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>(rate.audRates.audirrSpecial)
+    const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>(rate.audRates.irraudSpecial)
 
     //---Suggestion
     const [audirrSell, setAudirrSell] = useState(rate.suggestionRates.audirrSell)
@@ -157,7 +163,9 @@ export const Rate = () => {
     //------------------------------
     const audirrSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
+        console.log("specialRate: ", specialRate)
         setAudirrSpecial(specialRate)
+        console.log("audirrSpecial: ", audirrSpecial)
         dispatch(updateaudirrSpecial(audirrSpecial))
 
         //------------------------------
@@ -236,6 +244,7 @@ export const Rate = () => {
                                 </BoxHeader>
                                 <SpecialRate
                                     onChange={audirrSpecialHandler}
+                                    data={audirrSpecial}
                                 />
                             </CustomBox>
                         </BoxContainer>
@@ -289,6 +298,7 @@ export const Rate = () => {
                                 </BoxHeader>
                                 <SpecialRate
                                     onChange={irraudSpecialHandler}
+                                    data={irraudSpecial}
                                 />
                             </CustomBox>
                         </BoxContainer>

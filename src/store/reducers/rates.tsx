@@ -5,7 +5,6 @@ import * as actions from "../actions/rates"
 //------------------------------
 const AUD_RATES = "audRates/"
 const IRR_RATES = "irrRates/"
-const SPECIAL_RATS = "specialRats/"
 const SUGGESTION_RATES = "suggestionRates/"
 
 //------------------------------
@@ -70,12 +69,15 @@ export default createReducer(initialState, (builder) => {
     builder
         .addCase(actions.updateDays, (state, action) => { state.days = action.payload })
 
-        .addMatcher((action) => action.type.startsWith(AUD_RATES),
+        .addMatcher(
+            (action) => action.type.startsWith(AUD_RATES),
             (state, action) => UpdateHandler(AUD_RATES, state.audRates, action))
 
-        .addMatcher((action) => action.type.startsWith(IRR_RATES),
+        .addMatcher(
+            (action) => action.type.startsWith(IRR_RATES),
             (state, action) => UpdateHandler(IRR_RATES, state.irrRates, action))
 
-        .addMatcher((action) => action.type.startsWith(SUGGESTION_RATES),
+        .addMatcher(
+            (action) => action.type.startsWith(SUGGESTION_RATES),
             (state, action) => UpdateHandler(SUGGESTION_RATES, state.suggestionRates, action))
 })

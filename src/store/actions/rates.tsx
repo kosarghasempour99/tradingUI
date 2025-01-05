@@ -21,6 +21,10 @@ export const updateeuraudRate = createAction<RateInterface>("audRates/euraudRate
 export const updateaudusdRate = createAction<RateInterface>("audRates/audusdRate")
 export const updateusdaudRate = createAction<RateInterface>("audRates/usdaudRate")
 
+//---Update Special Rates
+export const updateaudirrSpecial = createAction<RateInterface>("audRates/audirrSpecial")
+export const updateirraudSpecial = createAction<RateInterface>("audRates/irraudSpecial")
+
 //---Update IRR Rates
 export const updateaedirrRate = createAction<RateInterface>("irrRates/aedirrRate")
 export const updateirraedRate = createAction<RateInterface>("irrRates/irraedRate")
@@ -32,10 +36,6 @@ export const updatetrlirrRate = createAction<RateInterface>("irrRates/trlirrRate
 export const updateirrtrlRate = createAction<RateInterface>("irrRates/irrtrlRate")
 export const updateusdirrRate = createAction<RateInterface>("irrRates/usdirrRate")
 export const updateirrusdRate = createAction<RateInterface>("irrRates/irrusdRate")
-
-//---Update Special Rates
-export const updateaudirrSpecial = createAction<RateInterface>("specialRats/audirrSpecial")
-export const updateirraudSpecial = createAction<RateInterface>("specialRats/irraudSpecial")
 
 //---Update Suggestion Rates
 export const updateaudirrSell = createAction<RateInterface>("suggestionRates/audirrSell")

@@ -7,7 +7,3 @@ interface UserProps {
     token: string
   }
 
-//------------------------------Rates Interface
-export interface RateInterface {
-  price: number
-}

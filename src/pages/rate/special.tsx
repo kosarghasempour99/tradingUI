@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { EditableTable }    from "src/components/core/Table/EditableTable"
 import { FormatNumber }     from "src/components/common/format"
@@ -10,19 +10,29 @@ interface DataType {
   over: number
 }
 
+interface ReturnType {
+  amount: number
+  over: number
+}
+
 interface BaseRateProc {
   onChange: (data: {amount: number, over: number}[]) => void
+  data: DataType[]
 }
 
 //------------------------------
 //---Special Rate
 //------------------------------
-export const SpecialRate: React.FC <BaseRateProc> = ({onChange}) => { 
-  const [dataSource, setDataSource] = useState<DataType[]>([{
-    key: "defaultRow",
-    amount: 2000,
-    over: 0,
-  }])
+export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data = []}) => { 
+  const [dataSource, setDataSource] = useState<DataType[]>(
+    data.length === 0 ? [
+      {
+        key: "defaultRow",
+        amount: 2000,
+        over: 0
+      }  
+    ] : data
+  )
 
   //------------------------------
   const handleAdd = () => {
@@ -38,10 +48,11 @@ export const SpecialRate: React.FC <BaseRateProc> = ({onChange}) => {
   const handleUpdate = (updatedRow: DataType) => {
     const updateData = dataSource.map((row) =>
       row.key === updatedRow.key ? { ...updatedRow } : row
-    );    setDataSource(updateData)
+    )
+     setDataSource(updateData)
 
     //---Send Special Rate to Parent
-    const extractedData = updateData.map(({ amount, over }) => ({ amount, over }));
+    const extractedData: ReturnType[] = updateData.map(({ amount, over }) => ({ amount, over }))
     onChange(extractedData)
   }
 
