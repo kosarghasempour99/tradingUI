@@ -236,8 +236,8 @@ export const Rate = () => {
                                     <Title>Based on AED</Title>
                                     <Content>{FormatNumber(audirrAED,0)}</Content>
                                 </BoxContent>
-
-                                <BoxHeader style={{width: "15vw", marginLeft: "1vw", marginTop: "4vw"}}>
+            {/* ---AUD / IRR Special Rates */}
+                                <BoxHeader style={{width: "25vw", marginLeft: "1vw", marginTop: "4vw"}}>
                                     <YellowLine>
                                         <Header>Special Rate</Header>
                                     </YellowLine>
@@ -290,8 +290,8 @@ export const Rate = () => {
                                     <Title>Based on AED</Title>
                                     <Content>{FormatNumber(irraudAED,0)}</Content>
                                 </BoxContent>
-
-                                <BoxHeader style={{width: "15vw", marginLeft: "1vw", marginTop: "4vw"}}>
+            {/* ---IRR / AUD Special Rates */}
+                                <BoxHeader style={{width: "25vw", marginLeft: "1vw", marginTop: "4vw"}}>
                                     <YellowLine>
                                         <Header>Special Rate</Header>
                                     </YellowLine>

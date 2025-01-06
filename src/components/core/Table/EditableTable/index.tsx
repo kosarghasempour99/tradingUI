@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import type { GetRef, InputRef, TableProps } from "antd"
-import { Button, Form, Input, Table } from "antd"
+
+import type { GetRef, InputRef, TableProps }  from "antd"
+import { Form, Input, Table }                 from "antd"
 
 type FormInstance<T> = GetRef<typeof Form<T>>
 
@@ -106,10 +107,7 @@ const EditableCell = <T extends object>({
 export const EditableTable = <T extends { key: React.Key }>({
   columns,
   dataSource,
-  lable,
-  onRowUpdate,
-  onRowDelete,
-  onAddRow,
+  onRowUpdate
 }: EditableTableProps<T>) => {
   const components = {
     body: {
@@ -134,7 +132,8 @@ export const EditableTable = <T extends { key: React.Key }>({
     }
   })
 
-  return (
+//------------------------------
+return (
     <div>
       <Table<T>
         components={components}

@@ -12,11 +12,14 @@ export const BaseUrlApi = {
  }
 
 //------------------------------------------------------------Users
-//------------------------------
-//---User Role
-//------------------------------
 export const UserRole = {
    MANAGER: "Manager",
    ACCOUNTANT: "Accountant",
    SUPPORT: "Support"
+}
+
+//------------------------------------------------------------Customers
+export const KVC = {
+   OK: "OK",
+   FAILED: "Failed"
 }

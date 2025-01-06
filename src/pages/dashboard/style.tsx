@@ -37,7 +37,7 @@ export const BoxContainer = styled(CustomBox)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 5px solid #F5F5F5;
+  border: 3px solid #F5F5F5;
 `;
 
 export const BoxName = styled(Typography)`

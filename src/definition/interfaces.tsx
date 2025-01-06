@@ -7,3 +7,14 @@ interface UserProps {
     token: string
   }
 
+//------------------------------Customer
+interface CustomerType {
+  user_code: string
+  name: string
+  country: string
+  phone: string
+  email: string
+  kvc: string
+  credit: number
+  description: string
+}
