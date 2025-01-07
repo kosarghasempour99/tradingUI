@@ -37,21 +37,10 @@ export const BoxMenu = styled(CustomBox)`
 `;
 
 export const BoxOptions = styled(CustomBox)`
-  width: 20vw;
+  width: 25vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  margin-left: Auto;
-`;
-
-export const BoxSearch = styled(CustomBox)`
-  width: 20vw;
-  background: #FFFFFF;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
   margin-left: Auto;
 `;
 
@@ -72,4 +61,11 @@ export const ItemLink = styled(Link) <{ active: boolean }>`
     margin: 0 0 0 1vw;
     font-family: Montserrat;
     font-weight:${({ active }) => (active ? "700" : "500")};
+`;
+
+export const Text = styled(Typography)`
+  color: #646464;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
 `;

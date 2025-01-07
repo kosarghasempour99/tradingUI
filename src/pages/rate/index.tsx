@@ -7,6 +7,7 @@ import { InputNumber }    from "antd"
 import { FormatNumber } from "src/components/common/format"
 import { SpecialRate }  from "src/components/core/Table/specialTable"
 import { CustomBox }    from "src/components/core/CustomBox"
+
 import { Benefit }      from "src/definition/domain"
 
 
@@ -197,7 +198,7 @@ export const Rate = () => {
         {/* ---Body */}
                 <RowContainer>
                     <CustomBox>
-        {/* ---AUD / IRR Rate */}
+            {/* ---AUD / IRR Rate */}
                         <BoxContainer style={{width: "32vw"}}>
                             <CustomBox>
                                 <BoxHeader style={{width: "15vw", marginLeft: "1vw", marginTop: "1vw"}}>

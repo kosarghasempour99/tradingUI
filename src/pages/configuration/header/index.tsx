@@ -13,7 +13,7 @@ export const ConfigHeader = () => {
     //------------------------------
     //---Handle Search
     //------------------------------
-    const handleSearch = (searchWord: any) => {
+    const handleSearch = (searchWord: string) => {
         console.log(searchWord)
     }
 

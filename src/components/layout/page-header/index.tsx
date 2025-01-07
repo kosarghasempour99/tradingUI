@@ -1,10 +1,7 @@
 import { useLocation }  from "react-router-dom"
 import { useState }     from "react"
-import { Input }        from 'antd'
 
-
-import { InputSelect }  from "src/components/core/Input/InputSelect"
-
+import { Input, Select }    from 'antd'
 
 import {
     BoxHeader,
@@ -12,9 +9,9 @@ import {
     BoxSide,
     BoxMenu,
     BoxOptions,
-    BoxSearch,
     Name,
-    ItemLink
+    ItemLink,
+    Text
 } from "./style"
 
 //------------------------------
@@ -34,7 +31,7 @@ type PageHeaderProps = {
     links: Link[]
     options?: FilterOption[]
     optionsLabel: string
-    onOptionsChange?: (selectedFilter: string) => void
+    onOptions: (selectedFilter: string) => void
     showOptions?: boolean
     onSearch: (searchTerm: string) => void
     showSearch?: boolean
@@ -49,7 +46,7 @@ export const PageHeader = ({
     links = [],
     options = [],
     optionsLabel = "Filter",
-    onOptionsChange = () => {},
+    onOptions = () => {},
     showOptions = false,    
     onSearch = () => {}, 
     showSearch = true
@@ -67,7 +64,7 @@ export const PageHeader = ({
     //------------------------------
     const handleFilterChange = (value: string) => {
         setSelectedFilter(value)
-        onOptionsChange(value)
+        onOptions(value)
     }
 
     //------------------------------
@@ -97,28 +94,28 @@ export const PageHeader = ({
                 ))}
                 {showOptions && options.length > 0 && (
                     <BoxOptions>
-                        <InputSelect
-                            options={options}
-                            label={optionsLabel}
-                            name={true}
-                            changedesign={true}
+                        <Text style={{marginRight: "0.5rem" }}>{optionsLabel}</Text>
+                        <Select
+                            defaultValue={options[0]?.value || ""}
                             value={selectedFilter}
-                            onChange={(e) => handleFilterChange(e.target.value)}
-                        />
+                            options={options}
+                            onChange={handleFilterChange}
+                            style={{ width: "12vw", marginRight: "5vw", fontFamily: "Montserrat-Regular, sans-serif" }}
+                        />                        
                     </BoxOptions>
                 )}
             </BoxMenu>
 
-            <BoxSearch>
+            <BoxOptions>
                 {showSearch && (
                     <Search
                         placeholder="Search..."
                         onSearch={handleSearch}
                         size = "Medium"
-                        style={{ width: "15vw" }}
+                        style={{ width: "15vw", marginLeft: "2vw" }}
                     />
                 )}
-            </BoxSearch>
+            </BoxOptions>
         </BoxHeader>
     )
 }

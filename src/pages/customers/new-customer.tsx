@@ -1,35 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState } from "react"
 import { Helmet }   from "react-helmet"
 
-import { CustomersHeader } from "./header"
+import { CustomersHeader }  from "./header"
+import { NewIndividual }    from "./newCustomer/new-individual"
+import { NewBusiness }      from "./newCustomer/new-business"
 
-import { GetAllCustomers } from "src/services/customers/getAll"
 
-import { RowContainer } from "../style"
+//------------------------------
+interface OptionsType {
+    label: string
+    value: string
+}
 
 //------------------------------
 //---New Customer
 //------------------------------
 export const NewCustomer = () => {
-    const [dataSource, setDataSource] = useState<CustomerType[]>([])
-    const [loading, setLoading] = useState(true)
+    const options = [
+        { label: "Individual", value: "Individual" },
+        { label: "Business", value: "Business" }
+    ]
+    const [customerType, setCustomerType] = useState<string>("Individual")
 
     //------------------------------
-    const fetchData = async () => {
-        try {
-          const customers = await GetAllCustomers()
-          setDataSource(customers)
-        } catch (error) {
-          console.error('Error fetching customers:', error)
-        } finally {
-          setLoading(false)
-        }
+    //---Customer Type habdler
+    //------------------------------
+    const handleCustomerType = (filter: OptionsType) => {
+        setCustomerType(filter.value)
     }
 
-    useEffect(() => {
-        fetchData()
-    }, [])
-    
     //------------------------------
     return (
         <>
@@ -37,10 +36,11 @@ export const NewCustomer = () => {
                 <title>New Customer</title>
             </Helmet>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <CustomersHeader />
-        {/* ---Body */}
-                <RowContainer style={{width: "95vw"}}>
-                </RowContainer>
+                <CustomersHeader
+                    options={options}
+                    onOptions={handleCustomerType}
+                />
+                {customerType === "Individual" ? <NewIndividual /> : <NewBusiness />}
             </div>
         </>
     )

@@ -25,7 +25,7 @@ export const ClearingHeader = () => {
     //------------------------------
     //---Handle Search
     //------------------------------
-    const handleSearch = (searchWord: any) => {
+    const handleSearch = (searchWord: string) => {
         console.log(searchWord)
     }
 

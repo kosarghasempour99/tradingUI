@@ -28,7 +28,7 @@ export const SettlementHeader = () => {
     //------------------------------
     //---Handle Search
     //------------------------------
-    const handleSearch = (searchWord: any) => {
+    const handleSearch = (searchWord: string) => {
         console.log(searchWord)
     }
 
