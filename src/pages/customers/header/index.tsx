@@ -5,6 +5,7 @@ import { PageHeader } from "src/components/layout/page-header"
 //------------------------------
 export const CustomersHeader = () => {
     const links = [
+        { to: "/customers", label: "َAll" },
         { to: "/new-customer", label: "New Customer" }
     ]
 

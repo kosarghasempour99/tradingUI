@@ -4,16 +4,13 @@ import { Helmet }   from "react-helmet"
 import { CustomersHeader } from "./header"
 
 import { GetAllCustomers } from "src/services/customers/getAll"
-import { CustomersTable }  from "./customersTable"
 
-import { CustomerType } from 'src/definition/interfaces'
-
-import { BoxContainer } from "../style"
+import { RowContainer } from "../style"
 
 //------------------------------
-//---Customers
+//---New Customer
 //------------------------------
-export const Customers = () => {
+export const NewCustomer = () => {
     const [dataSource, setDataSource] = useState<CustomerType[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -37,16 +34,13 @@ export const Customers = () => {
     return (
         <>
             <Helmet>
-                <title>Customers</title>
+                <title>New Customer</title>
             </Helmet>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <CustomersHeader />
         {/* ---Body */}
-                <BoxContainer style={{width: "95vw"}}>
-                    <CustomersTable
-                        data={dataSource}
-                    />
-                </BoxContainer>
+                <RowContainer style={{width: "95vw"}}>
+                </RowContainer>
             </div>
         </>
     )

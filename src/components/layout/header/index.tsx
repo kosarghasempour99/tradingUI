@@ -4,6 +4,7 @@ import Cookies      from "js-cookie"
 
 import { ProfileCircle }  from "iconsax-react"
 import { Notification }   from "iconsax-react"
+import { HomeHashtag }    from "iconsax-react"
 
 import { ProfileModal }     from "./modal/profile"
 
@@ -75,8 +76,15 @@ export const Header = () => {
                 </div>
               </BoxHeader>
 
-              <BoxHeader style={{width: "60%", marginLeft: "1vw"}}>
-              <ItemLink
+              <BoxHeader style={{width: "60%", marginLeft: "2vw"}}>
+                <Link to = "/">
+                  <HomeHashtag
+                    size="20"
+                    color="#FFFFFF"
+                  />
+                </Link>
+                
+                <ItemLink
                   style={{marginRight: "1vw"}}
                   to={"/new-order"}
                 >
@@ -125,7 +133,7 @@ export const Header = () => {
                 <HR />
 
                 <BoxProfile>
-                  <Notification size="18" color={Color.WHITE}/>
+                  <Notification size="20" color={Color.WHITE}/>
                 </BoxProfile>
                 <BoxProfile
                   style={{ cursor: "pointer" }}
@@ -140,7 +148,7 @@ export const Header = () => {
                   style={{ cursor: "pointer" }}
                   onClick={handleProfileModal}
                 >
-                  <ProfileCircle size="16" color={Color.WHITE}/>
+                  <ProfileCircle size="20" color={Color.WHITE}/>
                   <TextProfile> {userName} </TextProfile>
                 </BoxProfile>
               </BoxHeader>

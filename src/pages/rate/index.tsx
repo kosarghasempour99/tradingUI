@@ -5,10 +5,11 @@ import { Helmet }   from "react-helmet"
 import { InputNumber }    from "antd"
 
 import { FormatNumber } from "src/components/common/format"
+import { SpecialRate }  from "src/components/core/Table/specialTable"
 import { CustomBox }    from "src/components/core/CustomBox"
 import { Benefit }      from "src/definition/domain"
 
-import { SpecialRate }  from "./special"
+
 import { RateHeader }   from "./header"
 
 import { AppDispatch, RootState }   from "src/store"
@@ -102,28 +103,28 @@ export const Rate = () => {
     //------------------------------
     //---Rates Handler
     //------------------------------
-    const audirrHandler = (e) => {dispatch(updateaudirrRate(audirrRate))}
-    const irraudHandler = (e) => {dispatch(updateirraudRate(irraudRate))}
+    const audirrHandler = () => {dispatch(updateaudirrRate(audirrRate))}
+    const irraudHandler = () => {dispatch(updateirraudRate(irraudRate))}
 
-    const audaedHandler = (e) => {dispatch(updateaudaedRate(audaedRate))}
-    const aedaudHandler = (e) => {dispatch(updateaedaudRate(aedaudRate))}
-    const audcadHandler = (e) => {dispatch(updateaudcadRate(audcadRate))}
-    const cadaudHandler = (e) => {dispatch(updatecadaudRate(cadaudRate))}
-    const audeurHandler = (e) => {dispatch(updateaudeurRate(audeurRate))}
-    const euraudHandler = (e) => {dispatch(updateeuraudRate(euraudRate))}
-    const audusdHandler = (e) => {dispatch(updateaudusdRate(audusdRate))}
-    const usdaudHandler = (e) => {dispatch(updateusdaudRate(usdaudRate))}
+    const audaedHandler = () => {dispatch(updateaudaedRate(audaedRate))}
+    const aedaudHandler = () => {dispatch(updateaedaudRate(aedaudRate))}
+    const audcadHandler = () => {dispatch(updateaudcadRate(audcadRate))}
+    const cadaudHandler = () => {dispatch(updatecadaudRate(cadaudRate))}
+    const audeurHandler = () => {dispatch(updateaudeurRate(audeurRate))}
+    const euraudHandler = () => {dispatch(updateeuraudRate(euraudRate))}
+    const audusdHandler = () => {dispatch(updateaudusdRate(audusdRate))}
+    const usdaudHandler = () => {dispatch(updateusdaudRate(usdaudRate))}
 
-    const aedirrHandler = (e) => {dispatch(updateaedirrRate(aedirrRate))}
-    const irraedHandler = (e) => {dispatch(updateirraedRate(irraedRate))}
-    const cadirrHandler = (e) => {dispatch(updatecadirrRate(cadirrRate))}
-    const irrcadHandler = (e) => {dispatch(updateirrcadRate(irrcadRate))}
-    const eurirrHandler = (e) => {dispatch(updateeurirrRate(eurirrRate))}
-    const irreurHandler = (e) => {dispatch(updateirreurRate(irreurRate))}
-    const trlirrHandler = (e) => {dispatch(updatetrlirrRate(trlirrRate))}
-    const irrtrlHandler = (e) => {dispatch(updateirrtrlRate(irrtrlRate))}
-    const usdirrHandler = (e) => {dispatch(updateusdirrRate(usdirrRate))}
-    const irrusdHandler = (e) => {dispatch(updateirrusdRate(irrusdRate))}
+    const aedirrHandler = () => {dispatch(updateaedirrRate(aedirrRate))}
+    const irraedHandler = () => {dispatch(updateirraedRate(irraedRate))}
+    const cadirrHandler = () => {dispatch(updatecadirrRate(cadirrRate))}
+    const irrcadHandler = () => {dispatch(updateirrcadRate(irrcadRate))}
+    const eurirrHandler = () => {dispatch(updateeurirrRate(eurirrRate))}
+    const irreurHandler = () => {dispatch(updateirreurRate(irreurRate))}
+    const trlirrHandler = () => {dispatch(updatetrlirrRate(trlirrRate))}
+    const irrtrlHandler = () => {dispatch(updateirrtrlRate(irrtrlRate))}
+    const usdirrHandler = () => {dispatch(updateusdirrRate(usdirrRate))}
+    const irrusdHandler = () => {dispatch(updateirrusdRate(irrusdRate))}
     
     //------------------------------
     //---Suggestions Rates

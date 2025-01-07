@@ -25,7 +25,9 @@ import { UserOverview } from "src/pages/customer/overview"
 import { UserProfile }  from "src/pages/customer/profile"
 import { UserOrders }   from "src/pages/customer/orders"
 import { UserCredit }   from "src/pages/customer/credit"
-import { Customers }    from "src/pages/customers/"
+
+import { Customers }    from "src/pages/customers/customers"
+import { NewCustomer }  from "src/pages/customers/new-customer"
 
 import { TreasuryReports }  from "src/pages/reports/treasury"
 import { PaymentsReports }  from "src/pages/reports/payments"
@@ -77,6 +79,8 @@ import { UserConfig }     from "src/pages/configuration/user"
             <Route path="/rate" element={<Rate />} />
 
             <Route path="/customers" element={<Customers />} />
+            <Route path="/new-customer" element={<NewCustomer />} />
+
             <Route path="/overview-customer" element={<UserOverview />} />
             <Route path="/orders-customer" element={<UserOrders />} />
             <Route path="/credit" element={<UserCredit />} />
