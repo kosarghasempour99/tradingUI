@@ -4,6 +4,8 @@ import { EditableTable }    from "src/components/core/Table/EditableTable"
 import { FormatNumber }     from "src/components/common/format"
 
 //------------------------------
+import { SpecilaRateType } from "src/definition/interfaces"
+
 interface DataType {
   key: React.Key
   amount: number
@@ -17,7 +19,7 @@ interface ReturnType {
 
 interface BaseRateProc {
   onChange: (data: {amount: number, over: number}[]) => void
-  data: DataType[]
+  data: SpecilaRateType[]
 }
 
 //------------------------------

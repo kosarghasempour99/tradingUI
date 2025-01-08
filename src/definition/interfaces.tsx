@@ -18,3 +18,20 @@ interface CustomerType {
   credit: number
   description: string
 }
+
+//------------------------------Rate
+interface RateType {
+  pair: string
+  rate: number
+}
+
+interface MarginType {
+  pair: string
+  margin: number
+}
+
+interface SpecilaRateType {
+  amount: number
+  over: number
+  rate: number
+}

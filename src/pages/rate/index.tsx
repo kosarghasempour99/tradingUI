@@ -7,11 +7,20 @@ import { InputNumber }    from "antd"
 import { FormatNumber } from "src/components/common/format"
 import { SpecialRate }  from "src/components/core/Table/specialTable"
 import { CustomBox }    from "src/components/core/CustomBox"
+import { RateHeader }   from "./header"
 
 import { Benefit }      from "src/definition/domain"
+import {
+    GetIrrRates,
+    GetSpecialRates
+}  from "src/services/rateServices"
 
-
-import { RateHeader }   from "./header"
+import {
+    RateType,
+    MarginType,
+    SpecilaRateType
+  } from "src/definition/interfaces"
+  
 
 import { AppDispatch, RootState }   from "src/store"
 import {
@@ -47,12 +56,6 @@ import {
 } from "../style"
 
 //------------------------------
-interface SpecilaRateType {
-    amount: number
-    over: number
-  }
-
-//------------------------------
 //---Rate
 //------------------------------
 export const Rate = () => {
@@ -61,10 +64,22 @@ export const Rate = () => {
     const rate = useSelector((state: RootState) => state.rates)
     const competitor = useSelector((state: RootState) => state.competitors)
 
-    //---Rate
-    const [audirrRate, setAudirrRate] = useState(rate.audRates.audirrRate)
-    const [irraudRate, setIrraudRate] = useState(rate.audRates.irraudRate)
+    //---IRR Rate
+    const [audirrRate, setAudirrRate] = useState<number>(0)
+    const [irraudRate, setIrraudRate] = useState<number>(0)
 
+    const [aedirrRate, setAedirrRate] = useState<number>(0)
+    const [irraedRate, setIrraedRate] = useState<number>(0)
+    const [cadirrRate, setCadirrRate] = useState<number>(0)
+    const [irrcadRate, setIrrcadRate] = useState<number>(0)
+    const [eurirrRate, setEurirrRate] = useState<number>(0)
+    const [irreurRate, setIrreurRate] = useState<number>(0)
+    const [trlirrRate, setTrlirrRate] = useState<number>(0)
+    const [irrtrlRate, setIrrtrlRate] = useState<number>(0)
+    const [usdirrRate, setUsdirrRate] = useState<number>(0)
+    const [irrusdRate, setIrrusdRate] = useState<number>(0)
+
+    //---AUD Rate
     const [audaedRate, setAudaedRate] = useState(rate.audRates.audaedRate)
     const [aedaudRate, setAedaudRate] = useState(rate.audRates.aedaudRate)
     const [audcadRate, setAudcadRate] = useState(rate.audRates.audcadRate)
@@ -74,20 +89,9 @@ export const Rate = () => {
     const [audusdRate, setAudusdRate] = useState(rate.audRates.audusdRate)
     const [usdaudRate, setUsdaudRate] = useState(rate.audRates.usdaudRate)
 
-    const [aedirrRate, setAedirrRate] = useState(rate.irrRates.aedirrRate)
-    const [irraedRate, setIrraedRate] = useState(rate.irrRates.irraedRate)
-    const [cadirrRate, setCadirrRate] = useState(rate.irrRates.cadirrRate)
-    const [irrcadRate, setIrrcadRate] = useState(rate.irrRates.irrcadRate)
-    const [eurirrRate, setEurirrRate] = useState(rate.irrRates.eurirrRate)
-    const [irreurRate, setIrreurRate] = useState(rate.irrRates.irreurRate)
-    const [trlirrRate, setTrlirrRate] = useState(rate.irrRates.trlirrRate)
-    const [irrtrlRate, setIrrtrlRate] = useState(rate.irrRates.irrtrlRate)
-    const [usdirrRate, setUsdirrRate] = useState(rate.irrRates.usdirrRate)
-    const [irrusdRate, setIrrusdRate] = useState(rate.irrRates.irrusdRate)
-
     //---Special Rates
-    const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>(rate.audRates.audirrSpecial)
-    const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>(rate.audRates.irraudSpecial)
+    const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>([])
+    const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>([])
 
     //---Suggestion
     const [audirrSell, setAudirrSell] = useState(rate.suggestionRates.audirrSell)
@@ -101,6 +105,73 @@ export const Rate = () => {
     const [audirrMax, setAudirrMax] = useState(competitor.competitorsRate.audirrMax)
     const [irraudMin, setIrraudMin] = useState(competitor.competitorsRate.irraudMin)
 
+    //------------------------------
+    //---Rates Initiate
+    //------------------------------
+    const fetchData = async () => {
+        try {
+        //---IRR Rates
+            const irrRates: RateType[] = await GetIrrRates()
+            irrRates.forEach((rate) => {
+                switch (rate.pair) {
+                    case "AUDIRR":
+                        setAudirrRate(rate.rate)
+                        break
+                    case "IRRAUD":
+                        setIrraudRate(rate.rate)
+                        break
+                    case "AEDIRR":
+                        setAedirrRate(rate.rate)
+                        break
+                    case "IRRAED":
+                        setIrraedRate(rate.rate)
+                        break
+                    case "CADIRR":
+                        setCadirrRate(rate.rate)
+                        break
+                    case "IRRCAD":
+                        setIrrcadRate(rate.rate)
+                        break
+                    case "EURIRR":
+                        setEurirrRate(rate.rate)
+                        break
+                    case "IRREUR":
+                        setIrreurRate(rate.rate)
+                        break
+                    case "TRLIRR":
+                        setTrlirrRate(rate.rate)
+                        break
+                    case "IRRTRL":
+                        setIrrtrlRate(rate.rate)
+                        break
+                    case "USDIRR":
+                        setUsdirrRate(rate.rate)
+                        break
+                    case "IRRUSD":
+                        setIrrusdRate(rate.rate)
+                        break
+                    default:
+                    break
+                }
+              })        
+        //---Special Rates
+              const audSpecialRates: SpecilaRateType[] = await GetSpecialRates("AUDIRR")
+              audSpecialRates.map(rate => {
+                  setAudirrSpecial(audirrSpecial => [...audirrSpecial, rate])
+              })
+              const irrSpecialRates: SpecilaRateType[] = await GetSpecialRates("IRRAUD")
+              irrSpecialRates.map(rate => {
+                  setIrraudSpecial(irraudSpecial => [...irraudSpecial, rate])
+              })
+        } catch (error) {
+          console.error('Error fetching rates:', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+    
     //------------------------------
     //---Rates Handler
     //------------------------------
@@ -165,9 +236,7 @@ export const Rate = () => {
     //------------------------------
     const audirrSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
-        console.log("specialRate: ", specialRate)
         setAudirrSpecial(specialRate)
-        console.log("audirrSpecial: ", audirrSpecial)
         dispatch(updateaudirrSpecial(audirrSpecial))
 
         //------------------------------
