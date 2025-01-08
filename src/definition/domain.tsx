@@ -1,7 +1,7 @@
 export const Benefit = {
    Market: 1000,
-   AUDIRR: 0.015,
-   IRRAUD: 0.015
+   AUDIRR: 0.02,
+   IRRAUD: 0.02
 }
 
 //------------------------------

@@ -30,8 +30,14 @@ interface MarginType {
   margin: number
 }
 
-interface SpecilaRateType {
+interface SpecialRateType {
   amount: number
   over: number
   rate: number
+}
+
+interface CompetitorType {
+  name: string
+  audirr: number
+  irraud: number
 }

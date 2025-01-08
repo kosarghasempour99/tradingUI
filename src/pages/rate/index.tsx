@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState }      from "react"
 import { Helmet }   from "react-helmet"
 
@@ -11,39 +10,25 @@ import { RateHeader }   from "./header"
 
 import { Benefit }      from "src/definition/domain"
 import {
+    SaveIrrRate,
     GetIrrRates,
-    GetSpecialRates
+    SaveAudRate,
+    GetAudRates,
+    SaveAudMargin,
+    GetAudMargins,
+    SaveSpecialRates,
+    GetSpecialRates,
+    SaveCompetitorsRate,
+    GetCompetitorsRates
 }  from "src/services/rateServices"
 
 import {
     RateType,
     MarginType,
-    SpecilaRateType
+    SpecilaRateType,
+    CompetitorType
   } from "src/definition/interfaces"
   
-
-import { AppDispatch, RootState }   from "src/store"
-import {
-    updateaudirrRate, updateirraudRate,
-
-    updateaudaedRate, updateaedaudRate,
-    updateaudcadRate, updatecadaudRate,
-    updateaudeurRate, updateeuraudRate,
-    updateaudusdRate, updateusdaudRate,
-
-    updateaedirrRate, updateirraedRate,
-    updatecadirrRate, updateirrcadRate,
-    updateeurirrRate, updateirreurRate,
-    updatetrlirrRate, updateirrtrlRate,
-    updateusdirrRate, updateirrusdRate,
-
-    updateaudirrSpecial, updateirraudSpecial,
-
-    updateaudirrSell, updateirraudSell,
-    updateaudirrAED, updateirraudAED,
-    updateaudirrMarket, updateirraudMarket
-}   from "src/store/actions/rates"
-
 import {
     RowContainer,
     BoxContainer,
@@ -59,10 +44,6 @@ import {
 //---Rate
 //------------------------------
 export const Rate = () => {
-    const dispatch = useDispatch<AppDispatch>()
-    //---State
-    const rate = useSelector((state: RootState) => state.rates)
-    const competitor = useSelector((state: RootState) => state.competitors)
 
     //---IRR Rate
     const [audirrRate, setAudirrRate] = useState<number>(0)
@@ -79,38 +60,36 @@ export const Rate = () => {
     const [usdirrRate, setUsdirrRate] = useState<number>(0)
     const [irrusdRate, setIrrusdRate] = useState<number>(0)
 
-    //---AUD Rate
-    const [audaedRate, setAudaedRate] = useState(rate.audRates.audaedRate)
-    const [aedaudRate, setAedaudRate] = useState(rate.audRates.aedaudRate)
-    const [audcadRate, setAudcadRate] = useState(rate.audRates.audcadRate)
-    const [cadaudRate, setCadaudRate] = useState(rate.audRates.cadaudRate)
-    const [audeurRate, setAudeurRate] = useState(rate.audRates.audeurRate)
-    const [euraudRate, setEuraudRate] = useState(rate.audRates.euraudRate)
-    const [audusdRate, setAudusdRate] = useState(rate.audRates.audusdRate)
-    const [usdaudRate, setUsdaudRate] = useState(rate.audRates.usdaudRate)
+    //---AUD Rates
+    const [audaedRate, setAudaedRate] = useState<number>(0)
+    const [audcadRate, setAudcadRate] = useState<number>(0)
+    const [audeurRate, setAudeurRate] = useState<number>(0)
+    const [audusdRate, setAudusdRate] = useState<number>(0)
+
+    //---AUD Margin
+    const [audaedMargin, setAudaedMargin] = useState<number>(0)
+    const [audcadMargin, setAudcadMargin] = useState<number>(0)
+    const [audeurMargin, setAudeurMargin] = useState<number>(0)
+    const [audusdMargin, setAudusdMargin] = useState<number>(0)
 
     //---Special Rates
     const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>([])
     const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>([])
 
     //---Suggestion
-    const [audirrSell, setAudirrSell] = useState(rate.suggestionRates.audirrSell)
-    const [irraudBuy, setIrraudBuy] = useState(rate.suggestionRates.irraudBuy)
-    const [audirrAED, setAudirrAED] = useState(rate.suggestionRates.audirrAED)
-    const [irraudAED, setIrraudAED] = useState(rate.suggestionRates.irraudAED)
-    const [audirrMarket, setAudirrMarket] = useState(rate.suggestionRates.audirrMarket)
-    const [irraudMarket, setIrraudMarket] = useState(rate.suggestionRates.irraudMarket)
-
-    //---Competitors
-    const [audirrMax, setAudirrMax] = useState(competitor.competitorsRate.audirrMax)
-    const [irraudMin, setIrraudMin] = useState(competitor.competitorsRate.irraudMin)
+    const [audirrSell, setAudirrSell] = useState<number>(0)
+    const [irraudBuy, setIrraudBuy] = useState<number>(0)
+    const [audirrAED, setAudirrAED] = useState<number>(0)
+    const [irraudAED, setIrraudAED] = useState<number>(0)
+    const [audirrMarket, setAudirrMarket] = useState<number>(0)
+    const [irraudMarket, setIrraudMarket] = useState<number>(0)
 
     //------------------------------
-    //---Rates Initiate
+    //---Initiate
     //------------------------------
-    const fetchData = async () => {
+    //---IRR Rates
+    const irrRatesInitiate = async () => {
         try {
-        //---IRR Rates
             const irrRates: RateType[] = await GetIrrRates()
             irrRates.forEach((rate) => {
                 switch (rate.pair) {
@@ -154,82 +133,176 @@ export const Rate = () => {
                     break
                 }
               })        
-        //---Special Rates
-              const audSpecialRates: SpecilaRateType[] = await GetSpecialRates("AUDIRR")
-              audSpecialRates.map(rate => {
-                  setAudirrSpecial(audirrSpecial => [...audirrSpecial, rate])
-              })
-              const irrSpecialRates: SpecilaRateType[] = await GetSpecialRates("IRRAUD")
-              irrSpecialRates.map(rate => {
-                  setIrraudSpecial(irraudSpecial => [...irraudSpecial, rate])
-              })
         } catch (error) {
           console.error('Error fetching rates:', error)
         }
     }
 
+    //---AUD Rates
+    const audRatesInitiate = async () => {
+        try {
+            const irrRates: RateType[] = await GetAudRates()
+            irrRates.forEach((rate) => {
+                switch (rate.pair) {
+                    case "AUDAED":
+                        setAudaedRate(rate.rate)
+                        break
+                    case "AUDCAD":
+                        setAudcadRate(rate.rate)
+                        break
+                    case "AUDEUR":
+                        setAudeurRate(rate.rate)
+                        break
+                    case "AUDUSD":
+                        setAudusdRate(rate.rate)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching Rates:', error)
+        }
+    }
+
+    //---AUD Margins
+    const audMarginsInitiate = async () => {
+        try {
+            const irrRates: MarginType[] = await GetAudMargins()
+            irrRates.forEach((margin) => {
+                switch (margin.pair) {
+                    case "AUDAED":
+                        setAudaedMargin(margin.margin)
+                        break
+                    case "AUDCAD":
+                        setAudcadMargin(margin.margin)
+                        break
+                    case "AUDEUR":
+                        setAudeurMargin(margin.margin)
+                        break
+                    case "AUDUSD":
+                        setAudusdMargin(margin.margin)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching margins:', error)
+        }
+    }
+
+    //---Competitors Rates
+    const competitorsInitiate = async () => {
+        try {
+            const competitorsRates: CompetitorType[] = await GetCompetitorsRates()
+            competitorsRates.forEach((competitor) => {
+                switch (competitor.name) {
+                    case "AUDAED":
+                        setAudaedMargin(competitor.margin)
+                        break
+
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching margins:', error)
+        }
+    }
+
+    //------------------------------
     useEffect(() => {
-        fetchData()
+        irrRatesInitiate()
+        audRatesInitiate()
+        audMarginsInitiate()
+        competitorsInitiate()
     }, [])
-    
-    //------------------------------
-    //---Rates Handler
-    //------------------------------
-    const audirrHandler = () => {dispatch(updateaudirrRate(audirrRate))}
-    const irraudHandler = () => {dispatch(updateirraudRate(irraudRate))}
 
-    const audaedHandler = () => {dispatch(updateaudaedRate(audaedRate))}
-    const aedaudHandler = () => {dispatch(updateaedaudRate(aedaudRate))}
-    const audcadHandler = () => {dispatch(updateaudcadRate(audcadRate))}
-    const cadaudHandler = () => {dispatch(updatecadaudRate(cadaudRate))}
-    const audeurHandler = () => {dispatch(updateaudeurRate(audeurRate))}
-    const euraudHandler = () => {dispatch(updateeuraudRate(euraudRate))}
-    const audusdHandler = () => {dispatch(updateaudusdRate(audusdRate))}
-    const usdaudHandler = () => {dispatch(updateusdaudRate(usdaudRate))}
+    //------------------------------
+    //---IRR Rates Handler
+    //------------------------------
+    const irrRatesHandler = async (pair: string, rate: number) => {
+        try {
+            await SaveIrrRate(pair, rate)
+        } catch (error) {
+          console.error('Error saving rates:', error)
+        }
+    }
 
-    const aedirrHandler = () => {dispatch(updateaedirrRate(aedirrRate))}
-    const irraedHandler = () => {dispatch(updateirraedRate(irraedRate))}
-    const cadirrHandler = () => {dispatch(updatecadirrRate(cadirrRate))}
-    const irrcadHandler = () => {dispatch(updateirrcadRate(irrcadRate))}
-    const eurirrHandler = () => {dispatch(updateeurirrRate(eurirrRate))}
-    const irreurHandler = () => {dispatch(updateirreurRate(irreurRate))}
-    const trlirrHandler = () => {dispatch(updatetrlirrRate(trlirrRate))}
-    const irrtrlHandler = () => {dispatch(updateirrtrlRate(irrtrlRate))}
-    const usdirrHandler = () => {dispatch(updateusdirrRate(usdirrRate))}
-    const irrusdHandler = () => {dispatch(updateirrusdRate(irrusdRate))}
+    const audirrHandler = () => {irrRatesHandler("AUDIRR", audirrRate)}
+    const irraudHandler = () => {irrRatesHandler("IRRAUD", irraudRate)}
+    const aedirrHandler = () => {irrRatesHandler("AEDIRR", aedirrRate)}
+    const irraedHandler = () => {irrRatesHandler("IRRAED", irraedRate)}
+    const cadirrHandler = () => {irrRatesHandler("CADIRR", cadirrRate)}
+    const irrcadHandler = () => {irrRatesHandler("IRRCAD", irrcadRate)}
+    const eurirrHandler = () => {irrRatesHandler("EURIRR", eurirrRate)}
+    const irreurHandler = () => {irrRatesHandler("IRREUR", irreurRate)}
+    const trlirrHandler = () => {irrRatesHandler("TRLIRR", trlirrRate)}
+    const irrtrlHandler = () => {irrRatesHandler("IRRTRL", irrtrlRate)}
+    const usdirrHandler = () => {irrRatesHandler("USDIRR", usdirrRate)}
+    const irrusdHandler = () => {irrRatesHandler("IRRUSD", irrusdRate)}
+
+    //------------------------------
+    //---AUD Rates Handler
+    //------------------------------
+    const audRatesHandler = async (pair: string, rate: number) => {
+        try {
+            await SaveAudRate(pair, rate)
+        } catch (error) {
+          console.error('Error saving rates', error)
+        }
+    }
+
+    const aedRateHandler = () => {audRatesHandler("AEDAED", audaedRate)}
+    const cadRateHandler = () => {audRatesHandler("AUDCAD", audcadRate)}
+    const eurRateHandler = () => {audRatesHandler("AUDEUR", audeurRate)}
+    const usdRateHandler = () => {audRatesHandler("AUDUSD", audusdRate)}
+
+    //------------------------------
+    //---AUD Margins Handler
+    //------------------------------
+    const audMarginsHandler = async (pair: string, margin: number) => {
+        try {
+            await SaveAudMargin(pair, margin)
+        } catch (error) {
+          console.error('Error saving margins', error)
+        }
+    }
+
+    const aedMarginHandler = () => {audMarginsHandler("AEDAED", audaedMargin)}
+    const cadMarginHandler = () => {audMarginsHandler("AUDCAD", audcadMargin)}
+    const eurMarginHandler = () => {audMarginsHandler("AUDEUR", audeurMargin)}
+    const usdMarginHandler = () => {audMarginsHandler("AUDUSD", audusdMargin)}
+
     
     //------------------------------
     //---Suggestions Rates
     //------------------------------
-    useEffect(() => {
-        const max = audirrMax <= 0 ? 0 : (audirrMax + Benefit.Market)
-        const min = irraudMin <= 0 ? 0 : irraudMin
-        setAudirrMarket(Math.round(max/1000)*1000)
-        setIrraudMarket(Math.round(min/1000)*1000)
+    // useEffect(() => {
+    //     const max = audirrMax <= 0 ? 0 : (audirrMax + Benefit.Market)
+    //     const min = irraudMin <= 0 ? 0 : irraudMin
+    //     setAudirrMarket(Math.round(max/1000)*1000)
+    //     setIrraudMarket(Math.round(min/1000)*1000)
 
-        dispatch(updateaudirrMarket(audirrMarket))
-        dispatch(updateirraudMarket(irraudMarket))
-    })
+    //     dispatch(updateaudirrMarket(audirrMarket))
+    //     dispatch(updateirraudMarket(irraudMarket))
+    // })
 
     useEffect(() => {
-        const sell = audirrRate * (1 - Benefit.AUDIRR)
-        const buy = irraudRate * (1 + Benefit.IRRAUD)
+        const buy = audirrRate * (1 + Benefit.AUDIRR)
+        const sell = irraudRate * (1 - Benefit.IRRAUD)
         setAudirrSell(Math.round(sell/1000)*1000)
         setIrraudBuy(Math.round(buy/1000)*1000)
-
-        dispatch(updateaudirrSell(audirrSell))
-        dispatch(updateirraudSell(irraudBuy))
     }, [audirrRate, irraudRate])
 
     useEffect(() => {
-        const audaed = audaedRate * irraedRate
-        const aedaud = aedaudRate * aedirrRate
+        const audaed = (audaedRate * (1 + audaedMargin)) * irraedRate
+        const aedaud = (audaedRate * (1 + audaedMargin)) * aedirrRate
         setAudirrAED(Math.round(audaed/1000)*1000)
         setIrraudAED(Math.round(aedaud/1000)*1000)
 
-        dispatch(updateaudirrAED(audirrAED))
-        dispatch(updateirraudAED(irraudAED))
-    }, [aedaudRate, audaedRate, aedirrRate, irraedRate])
+    }, [audaedRate, audaedMargin, aedirrRate, irraedRate])
 
     //------------------------------
     //---Special Rates
@@ -237,7 +310,6 @@ export const Rate = () => {
     const audirrSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
         setAudirrSpecial(specialRate)
-        dispatch(updateaudirrSpecial(audirrSpecial))
 
         //------------------------------
         //---Save AUD/IRR Special Rates
@@ -248,7 +320,6 @@ export const Rate = () => {
     const irraudSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
         setIrraudSpecial(specialRate)
-        dispatch(updateirraudSpecial(irraudSpecial))
 
         //------------------------------
         //---Save IRR/AUD Special Rates
@@ -378,9 +449,12 @@ export const Rate = () => {
         {/* ---AUD Rates */}
                         <BoxContainer style={{width: "27vw"}}>
                             <CustomBox>
-                                <BoxHeader style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxHeader style={{width: "14vw", marginLeft: "7vw", marginTop: "1vw"}}>
                                     <YellowLine>
-                                        <Header>AUD Rates</Header>
+                                        <Header style={{width: "7vw"}}>Rates</Header>
+                                    </YellowLine>
+                                    <YellowLine>
+                                        <Header style={{width: "5vw"}}>Margin</Header>
                                     </YellowLine>
                                 </BoxHeader>
                                 <BoxContent style={{width: "25vw", marginLeft: "1vw", marginTop: "1vw"}}>
@@ -392,23 +466,23 @@ export const Rate = () => {
                                             variant="filled"
                                             style={{width: "7vw"}}
                                             min={0}
-                                            value={FormatNumber(audaedRate)}
+                                            value={audaedRate}
                                             onChange={(value)=>{
                                                 setAudaedRate(value)
                                             }}
-                                            onKeyDown={audaedHandler}
+                                            onKeyDown={aedRateHandler}
                                         />
                                     </BoxContent>
                                     <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
-                                            style={{width: "7vw"}}
+                                            style={{width: "5vw"}}
                                             min={0}
-                                            value={FormatNumber(aedaudRate)}
+                                            value={audaedMargin}
                                             onChange={(value)=>{
-                                                setAedaudRate(value)
+                                                setAudaedMargin(value)
                                             }}
-                                            onKeyDown={aedaudHandler}
+                                            onKeyDown={aedMarginHandler}
                                         />
                                     </BoxContent>
                                 </BoxContent>
@@ -421,23 +495,23 @@ export const Rate = () => {
                                             variant="filled"
                                             style={{width: "7vw"}}
                                             min={0}
-                                            value={FormatNumber(audcadRate)}
+                                            value={audcadRate}
                                             onChange={(value)=>{
                                                 setAudcadRate(value)
                                             }}
-                                            onKeyDown={audcadHandler}
+                                            onKeyDown={cadRateHandler}
                                         />
                                    </BoxContent>
                                     <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
-                                            style={{width: "7vw"}}
+                                            style={{width: "5vw"}}
                                             min={0}
-                                            value={FormatNumber(cadaudRate)}
+                                            value={audcadMargin}
                                             onChange={(value)=>{
-                                                setCadaudRate(value)
+                                                setAudcadMargin(value)
                                             }}
-                                            onKeyDown={cadaudHandler}
+                                            onKeyDown={cadMarginHandler}
                                         />
                                     </BoxContent>
                                 </BoxContent>
@@ -450,23 +524,23 @@ export const Rate = () => {
                                             variant="filled"
                                             style={{width: "7vw"}}
                                             min={0}
-                                            value={FormatNumber(audeurRate)}
+                                            value={audeurRate}
                                             onChange={(value)=>{
                                                 setAudeurRate(value)
                                             }}
-                                            onKeyDown={audeurHandler}
+                                            onKeyDown={eurRateHandler}
                                         />
                                     </BoxContent>
                                     <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
-                                            style={{width: "7vw"}}
+                                            style={{width: "5vw"}}
                                             min={0}
-                                            value={FormatNumber(euraudRate)}
+                                            value={audeurMargin}
                                             onChange={(value)=>{
-                                                setEuraudRate(value)
+                                                setAudeurMargin(value)
                                             }}
-                                            onKeyDown={euraudHandler}
+                                            onKeyDown={eurMarginHandler}
                                         />
                                     </BoxContent>
                                 </BoxContent>
@@ -479,23 +553,23 @@ export const Rate = () => {
                                             variant="filled"
                                             style={{width: "7vw"}}
                                             min={0}
-                                            value={FormatNumber(audusdRate)}
+                                            value={audusdRate}
                                             onChange={(value)=>{
                                                 setAudusdRate(value)
                                             }}
-                                            onKeyDown={audusdHandler}
+                                            onKeyDown={usdRateHandler}
                                         />
                                     </BoxContent>
                                     <BoxContent style={{width: "10vw"}}>
                                         <InputNumber
                                             variant="filled"
-                                            style={{width: "7vw"}}
+                                            style={{width: "5vw"}}
                                             min={0}
-                                            value={FormatNumber(usdaudRate)}
+                                            value={audusdMargin}
                                             onChange={(value)=>{
-                                                setUsdaudRate(value)
+                                                setAudusdMargin(value)
                                             }}
-                                            onKeyDown={usdaudHandler}
+                                            onKeyDown={usdMarginHandler}
                                         />
                                     </BoxContent>
                                 </BoxContent>
