@@ -1,32 +1,29 @@
-import { Space, Table, Tag }    from 'antd'
+import { Table }    from 'antd'
 import type { TableProps }      from 'antd'
 import React                    from 'react'
 
-import { FormatNumber } from "src/components/common/format"
+import { SpecialRateType }  from "src/definition/interfaces"
+import { FormatNumber }     from "src/components/common/format"
 
 //------------------------------
-interface DataType {
-  key: string
-  amount: number
-  over: number
-}
-
 interface BaseRateProc {
-    fixedRate: number
-    dataSource: DataType[]
+    dataSource: SpecialRateType[]
   }
   
 //------------------------------
 //---Orders Header
 //------------------------------
-export const SpecialRate: React.FC <BaseRateProc> = ({fixedRate, dataSource}) => { 
-    const columns: TableProps<DataType>['columns'] = [
+export const SpecialRate: React.FC <BaseRateProc> = ({dataSource}) => { 
+    const columns: TableProps<SpecialRateType>['columns'] = [
         {
             title: 'Amount',
             dataIndex: 'amount',
             key: 'amount',
             width: "10vw",
             align: "center",
+            render: (_, record) => (
+                <span>{FormatNumber(record.amount,0)}</span>
+              ),
         },
         {
             title: 'Rate',
@@ -34,7 +31,7 @@ export const SpecialRate: React.FC <BaseRateProc> = ({fixedRate, dataSource}) =>
             width: "10vw",
             align: "center",
             render: (_, record) => (
-                <span>{FormatNumber(fixedRate + record.over,0)}</span>
+                <span>{FormatNumber(record.rate,0)}</span>
               ),
         }
     ]

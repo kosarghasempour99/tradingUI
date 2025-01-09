@@ -3,30 +3,19 @@ import React, { useEffect, useState } from "react"
 import { EditableTable }    from "src/components/core/Table/EditableTable"
 import { FormatNumber }     from "src/components/common/format"
 
+import { SpecialRateType } from "src/definition/interfaces"
+
 //------------------------------
-import { SpecilaRateType } from "src/definition/interfaces"
-
-interface DataType {
-  key: React.Key
-  amount: number
-  over: number
-}
-
-interface ReturnType {
-  amount: number
-  over: number
-}
-
 interface BaseRateProc {
-  onChange: (data: {amount: number, over: number}[]) => void
-  data: SpecilaRateType[]
+  onChange: (data: SpecialRateType[]) => void
+  data: SpecialRateType[]
 }
 
 //------------------------------
 //---Special Rate
 //------------------------------
-export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data = []}) => { 
-  const [dataSource, setDataSource] = useState<DataType[]>(
+export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data}) => { 
+  const [dataSource, setDataSource] = useState<SpecialRateType[]>(
     data.length === 0 ? [
       {
         key: "defaultRow",
@@ -41,20 +30,21 @@ export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data = []}) => {
     const newRow = {
       key: Date.now(),
       amount: 2000,
-      over: 0
+      over: 0,
+      rate: 0
     }
     setDataSource([...dataSource, newRow])
   }
 
   //------------------------------
-  const handleUpdate = (updatedRow: DataType) => {
+  const handleUpdate = (updatedRow: SpecialRateType) => {
     const updateData = dataSource.map((row) =>
       row.key === updatedRow.key ? { ...updatedRow } : row
     )
      setDataSource(updateData)
 
     //---Send Special Rate to Parent
-    const extractedData: ReturnType[] = updateData.map(({ amount, over }) => ({ amount, over }))
+    const extractedData: SpecialRateType[] = updateData.map(({ amount, over, rate }) => ({ amount, over, rate}))
     onChange(extractedData)
   }
 
@@ -85,14 +75,14 @@ export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data = []}) => {
     {
       title: "",
       dataIndex: "action",
-      render: (_: any, record: DataType) => (
+      render: (_: any, record: SpecialRateType) => (
         <a onClick={() => handleDelete(record.key)}>-</a>
       ),
     },
     {
       title: "",
       dataIndex: "action",
-      render: (_: any, record: DataType) => (
+      render: (_: any, record: SpecialRateType) => (
         <a onClick={() => handleAdd()}>+</a>
       ),
     }
@@ -100,7 +90,7 @@ export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data = []}) => {
 
   //------------------------------
   return (
-    <EditableTable<DataType>
+    <EditableTable<SpecialRateType>
       columns={columns}
       dataSource={dataSource}
       lable="New Special Rate"

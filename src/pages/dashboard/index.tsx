@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState }      from "react"
 import { Scanning } from "iconsax-react"
 import { Helmet }   from "react-helmet"
@@ -11,21 +10,29 @@ import { PieChart }     from "src/components/core/chart/PieChart"
 import { Color }        from "src/definition/color"
 import { SpecialRate }  from "./special"
 
-import { AppDispatch, RootState }   from "src/store"
 
-import { updateDays}    from "src/store/actions/rates"
 import {
-    updateaudirrMoneyMex, updateirraudMoneyMex,
-    updateaudirrRosecap, updateirraudRosecap,
-    updateaudirrSeyhoon, updateirraudSeyhoon,
-    updateaudirrJavadi, updateirraudJavadi,
-    updateaudirrExpress, updateirraudExpress,
-    updateaudirrKangroos, updateirraudKangroos,
-    updateaudirrRoomi, updateirraudRoomi,
-    updateaudirrAfshar, updateirraudAfshar,
-    updateaudirrMax, updateirraudMin
-} from "src/store/actions/competitors"
+    GetAverageRate,
+    GetIrrRates,
+    GetAudRates,
+    GetAudMargins,
+    GetSpecialRates,
+    SaveCompetitorsRate,
+    GetCompetitorsRates,
+    GetOrdersBalance,
+    GetAssetBalance
+}  from "src/services/rateServices"
 
+import {
+    PairType,
+    RateType,
+    MarginType,
+    SpecilaRateType,
+    CompetitorType,
+    OrdersBalanceType,
+    AssetBalanceType
+  } from "src/definition/interfaces"
+  
 import {
     RowContainer,
     BoxTop,
@@ -46,80 +53,82 @@ import {
 //---Orders Header
 //------------------------------
 export const Dashboard = () => {
-    const dispatch = useDispatch<AppDispatch>()
-
-    //---State
-    const rate = useSelector((state: RootState) => state.rates)
-    const competitor = useSelector((state: RootState) => state.competitors)
-
     //---Balance
-    const [audReceiveBalance, setAudReceiveBalance] = useState(243279)
-    const [audUrgentBalance, setAudUrgentBalance] = useState(89000)
-    const [irrReceiveBalance, setIrrReceiveBalance] = useState(45789250000)
-    const [irrUrgentBalance, setIrrUrgentBalance] = useState(10000000000)
+    const [audReceiveBalance, setAudReceiveBalance] = useState<number>(0)
+    const [audUrgentBalance, setAudUrgentBalance] = useState<number>(0)
+    const [irrReceiveBalance, setIrrReceiveBalance] = useState<number>(0)
+    const [irrUrgentBalance, setIrrUrgentBalance] = useState<number>(0)
 
-    const [equalAUDBalance, setEqualAUDBalance] = useState(10074898)
-    const [availableAED, setAvailableAED] = useState(270345)
+    const [audBalance, setAudBalance] = useState<number>(0)
+    const [aedBalance, setAedBalance] = useState<number>(0)
+    const [cadBalance, setCadBalance] = useState<number>(0)
+    const [eurBalance, setEurBalance] = useState<number>(0)
+    const [trlBalance, setTrlBalance] = useState<number>(0)
+    const [usdBalance, setUsdBalance] = useState<number>(0)
 
-    const [audBalance, setAudBalance] = useState(50000)
-    const [aedBalance, setAedBalance] = useState(270345)
-    const [cadBalance, setCadBalance] = useState(3000)
-    const [eurBalance, setEurBalance] = useState(3000)
-    const [trlBalance, setTrlBalance] = useState(10000)
-    const [usdBalance, setUsdBalance] = useState(9000)
+    const [equalAUDBalance, setEqualAUDBalance] = useState<number>(0)
+    const [availableAED, setAvailableAED] = useState<number>(0)
 
-    //---Rate
-    const [audirrRate, setAudirrRate] = useState(rate.audRates.audirrRate)
-    const [irraudRate, setIrraudRate] = useState(rate.audRates.irraudRate)
-
-    const [audaedRate, setAudaedRate] = useState(rate.audRates.audaedRate)
-    const [aedaudRate, setAedaudRate] = useState(rate.audRates.aedaudRate)
-    const [audcadRate, setAudcadRate] = useState(rate.audRates.audcadRate)
-    const [cadaudRate, setCadaudRate] = useState(rate.audRates.cadaudRate)
-    const [audeurRate, setAudeurRate] = useState(rate.audRates.audeurRate)
-    const [euraudRate, setEuraudRate] = useState(rate.audRates.euraudRate)
-    const [audusdRate, setAudusdRate] = useState(rate.audRates.audusdRate)
-    const [usdaudRate, setUsdaudRate] = useState(rate.audRates.usdaudRate)
-
-    const [aedirrRate, setAedirrRate] = useState(rate.irrRates.aedirrRate)
-    const [irraedRate, setIrraedRate] = useState(rate.irrRates.irraedRate)
-    const [cadirrRate, setCadirrRate] = useState(rate.irrRates.cadirrRate)
-    const [irrcadRate, setIrrcadRate] = useState(rate.irrRates.irrcadRate)
-    const [eurirrRate, setEurirrRate] = useState(rate.irrRates.eurirrRate)
-    const [irreurRate, setIrreurRate] = useState(rate.irrRates.irreurRate)
-    const [trlirrRate, setTrlirrRate] = useState(rate.irrRates.trlirrRate)
-    const [irrtrlRate, setIrrtrlRate] = useState(rate.irrRates.irrtrlRate)
-    const [usdirrRate, setUsdirrRate] = useState(rate.irrRates.usdirrRate)
-    const [irrusdRate, setIrrusdRate] = useState(rate.irrRates.irrusdRate)
-
-    const [days, setDays] = useState(rate.days)
+    //---Average Rates
+    const [days, setDays] = useState<number>(2)
     const [audirrAverage, setAudirrAverage] = useState(0)
     const [irraudAverage, setIrraudAverage] = useState(0)
 
+    //---IRR Rate
+    const [audirrRate, setAudirrRate] = useState<number>(0)
+    const [irraudRate, setIrraudRate] = useState<number>(0)
+
+    const [aedirrRate, setAedirrRate] = useState<number>(0)
+    const [irraedRate, setIrraedRate] = useState<number>(0)
+    const [cadirrRate, setCadirrRate] = useState<number>(0)
+    const [irrcadRate, setIrrcadRate] = useState<number>(0)
+    const [eurirrRate, setEurirrRate] = useState<number>(0)
+    const [irreurRate, setIrreurRate] = useState<number>(0)
+    const [trlirrRate, setTrlirrRate] = useState<number>(0)
+    const [irrtrlRate, setIrrtrlRate] = useState<number>(0)
+    const [usdirrRate, setUsdirrRate] = useState<number>(0)
+    const [irrusdRate, setIrrusdRate] = useState<number>(0)
+
+    //---AUD Margin
+    const [audaedMargin, setAudaedMargin] = useState<number>(0)
+    const [audcadMargin, setAudcadMargin] = useState<number>(0)
+    const [audeurMargin, setAudeurMargin] = useState<number>(0)
+    const [audusdMargin, setAudusdMargin] = useState<number>(0)
+
+    //---AUD Rates
+    const [audaedRate, setAudaedRate] = useState<number>(0)
+    const [aedaudRate, setAedaudRate] = useState<number>(0)
+    const [audcadRate, setAudcadRate] = useState<number>(0)
+    const [cadaudRate, setCadaudRate] = useState<number>(0)
+    const [audeurRate, setAudeurRate] = useState<number>(0)
+    const [euraudRate, setEuraudRate] = useState<number>(0)
+    const [audusdRate, setAudusdRate] = useState<number>(0)
+    const [usdaudRate, setUsdaudRate] = useState<number>(0)
+
     //---Special Rates
-    const [audirrSpecial, setAudirrSpecial] = useState(rate.audRates.audirrSpecial)
-    const [irraudSpecial, setIrraudSpecial] = useState(rate.audRates.irraudSpecial)
+    const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>([])
+    const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>([])
 
     //---Competitors
-    const [audirrMoneyMex, setAudirrMoneyMex] = useState(competitor.competitorsRate.audirrMoneyMex)
-    const [irraudMoneyMex, setIrraudMoneyMex] = useState(competitor.competitorsRate.irraudMoneyMex)
-    const [audirrRosecap, setAudirrRosecap] = useState(competitor.competitorsRate.audirrRosecap)
-    const [irraudRosecap, setIrraudRosecap] = useState(competitor.competitorsRate.irraudRosecap)
-    const [audirrSeyhoon, setAudirrSeyhoon] = useState(competitor.competitorsRate.audirrSeyhoon)
-    const [irraudSeyhoon, setIrraudSeyhoon] = useState(competitor.competitorsRate.irraudSeyhoon)
-    const [audirrJavadi, setAudirrJavadi] = useState(competitor.competitorsRate.audirrJavadi)
-    const [irraudJavadi, setIrraudJavadi] = useState(competitor.competitorsRate.irraudJavadi)
-    const [audirrExpress, setAudirrExpress] = useState(competitor.competitorsRate.audirrExpress)
-    const [irraudExpress, setIrraudExpress] = useState(competitor.competitorsRate.irraudExpress)
-    const [audirrKangroos, setAudirrKangroos] = useState(competitor.competitorsRate.audirrKangroos)
-    const [irraudKangroos, setIrraudKangroos] = useState(competitor.competitorsRate.irraudKangroos)
-    const [audirrRoomi, setAudirrRoomi] = useState(competitor.competitorsRate.audirrRoomi)
-    const [irraudRoomi, setIrraudRoomi] = useState(competitor.competitorsRate.irraudRoomi)
-    const [audirrAfshar, setAudirrAfshar] = useState(competitor.competitorsRate.audirrAfshar)
-    const [irraudAfshar, setIrraudAfshar] = useState(competitor.competitorsRate.irraudAfshar)
-
-    const [audirrMax, setAudirrMax] = useState(competitor.competitorsRate.audirrMax)
-    const [irraudMin, setIrraudMin] = useState(competitor.competitorsRate.irraudMin)
+    const [audirrMoneyMex, setAudirrMoneyMex] = useState<number>(0)
+    const [irraudMoneyMex, setIrraudMoneyMex] = useState<number>(0)
+    const [audirrRosecap, setAudirrRosecap] = useState<number>(0)
+    const [irraudRosecap, setIrraudRosecap] = useState<number>(0)
+    const [audirrSeyhoon, setAudirrSeyhoon] = useState<number>(0)
+    const [irraudSeyhoon, setIrraudSeyhoon] = useState<number>(0)
+    const [audirrJavadi, setAudirrJavadi] = useState<number>(0)
+    const [irraudJavadi, setIrraudJavadi] = useState<number>(0)
+    const [audirrExpress, setAudirrExpress] = useState<number>(0)
+    const [irraudExpress, setIrraudExpress] = useState<number>(0)
+    const [audirrKangroos, setAudirrKangroos] = useState<number>(0)
+    const [irraudKangroos, setIrraudKangroos] = useState<number>(0)
+    const [audirrRoomi, setAudirrRoomi] = useState<number>(0)
+    const [irraudRoomi, setIrraudRoomi] = useState<number>(0)
+    const [audirrAfshar, setAudirrAfshar] = useState<number>(0)
+    const [irraudAfshar, setIrraudAfshar] = useState<number>(0)
+   
+    const [audirrMax, setAudirrMax] = useState<number>(0)
+    const [irraudMin, setIrraudMin] = useState<number>(0)
 
     //---Chart
     const [currencies, setCurrencies] = useState([
@@ -137,69 +146,304 @@ export const Dashboard = () => {
     const trlColor = Color.YELLOW
     const usdColor = Color.RED_LIGHT
     const customColors = [audColor, aedColor, cadColor, eurColor, trlColor, usdColor]
-    
-    //------------------------------
-    //---Average Days Handler
-    //------------------------------
-    const DaysHandler = (e) => {
-        if (e.key === "Enter") {
-            dispatch(updateDays(days))
 
-            //------------------------------
-            //---Average AUD / IRR Rates
-            //------------------------------
+    //------------------------------
+    //---Initiate
+    //------------------------------
+    //---Orders Balance
+    const ordersBalanceInitiate = async () => {
+        try {
+            const ordersbBalance: OrdersBalanceType[] = await GetOrdersBalance()
+            ordersbBalance.forEach((balance) => {
+                switch (balance.currency) {
+                    case "AUD":
+                        setAudReceiveBalance(balance.balance)
+                        setAudUrgentBalance(balance.urgent)
+                        break
+                    case "IRR":
+                        setIrrReceiveBalance(balance.balance)
+                        setIrrUrgentBalance(balance.urgent)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching rates:', error)
+        }
+    }
+
+    //---Asset Balance
+    const assetBalanceInitiate = async () => {
+        try {
+            const assetBalance: AssetBalanceType[] = await GetAssetBalance()
+            assetBalance.forEach((balance) => {
+                switch (balance.currency) {
+                    case "AUD":
+                        setAudBalance(balance.balance)
+                        break
+                    case "AED":
+                        setAedBalance(balance.balance)
+                        break
+                    case "CAD":
+                        setCadBalance(balance.balance)
+                        break
+                    case "EUR":
+                        setEurBalance(balance.balance)
+                        break
+                    case "TRL":
+                        setTrlBalance(balance.balance)
+                        break
+                    case "USD":
+                        setUsdBalance(balance.balance)        
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching rates:', error)
+        }
+    }
+
+    //---IRR Rates
+    const irrRatesInitiate = async () => {
+        try {
+            const irrRates: RateType[] = await GetIrrRates()
+            irrRates.forEach((rate) => {
+                switch (rate.pair) {
+                    case "AUDIRR":
+                        setAudirrRate(rate.rate)
+                        break
+                    case "IRRAUD":
+                        setIrraudRate(rate.rate)
+                        break
+                    case "AEDIRR":
+                        setAedirrRate(rate.rate)
+                        break
+                    case "IRRAED":
+                        setIrraedRate(rate.rate)
+                        break
+                    case "CADIRR":
+                        setCadirrRate(rate.rate)
+                        break
+                    case "IRRCAD":
+                        setIrrcadRate(rate.rate)
+                        break
+                    case "EURIRR":
+                        setEurirrRate(rate.rate)
+                        break
+                    case "IRREUR":
+                        setIrreurRate(rate.rate)
+                        break
+                    case "TRLIRR":
+                        setTrlirrRate(rate.rate)
+                        break
+                    case "IRRTRL":
+                        setIrrtrlRate(rate.rate)
+                        break
+                    case "USDIRR":
+                        setUsdirrRate(rate.rate)
+                        break
+                    case "IRRUSD":
+                        setIrrusdRate(rate.rate)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching rates:', error)
+        }
+    }
+
+    //---AUD Margins
+    const audMarginsInitiate = async () => {
+        try {
+            const irrRates: MarginType[] = await GetAudMargins()
+            irrRates.forEach((margin) => {
+                switch (margin.pair) {
+                    case "AUDAED":
+                        setAudaedMargin(margin.margin)
+                        break
+                    case "AUDCAD":
+                        setAudcadMargin(margin.margin)
+                        break
+                    case "AUDEUR":
+                        setAudeurMargin(margin.margin)
+                        break
+                    case "AUDUSD":
+                        setAudusdMargin(margin.margin)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching margins:', error)
+        }
+    }
+
+    //---AUD Rates
+    const audRatesInitiate = async () => {
+        try {
+            const irrRates: RateType[] = await GetAudRates()
+            irrRates.forEach((rate) => {
+                switch (rate.pair) {
+                    case "AUDAED":
+                        setAudaedRate(rate.rate * ( 1 - audaedMargin))
+                        setAedaudRate(rate.rate * ( 1 + audaedMargin))
+                        break
+                    case "AUDCAD":
+                        setAudcadRate(rate.rate * ( 1 - audcadMargin))
+                        setCadaudRate(1 / (rate.rate * ( 1 + audcadMargin)))
+                        break
+                    case "AUDEUR":
+                        setAudeurRate(rate.rate * ( 1 - audeurMargin))
+                        setEuraudRate(1 / (rate.rate * ( 1 + audeurMargin)))
+                        break
+                    case "AUDUSD":
+                        setAudusdRate(rate.rate * ( 1 - audusdMargin))
+                        setUsdaudRate(1 / (rate.rate * ( 1 + audusdMargin)))
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching Rates:', error)
+        }
+    }
+
+    //---Special Rates
+    const SpecialRatesInitiate = async () => {
+        try {
+            const audirrSpecialRates: SpecialRateType[] = await GetSpecialRates("AUDIRR")
+            setAudirrSpecial(audirrSpecialRates)
+
+            const irraudSpecialRates: SpecialRateType[] = await GetSpecialRates("IRRAUD")
+            setIrraudSpecial(irraudSpecialRates)
+        } catch (error) {
+          console.error('Error fetching special rates:', error)
+        }
+    }
+
+    //---Competitor Rates
+    const competitorRatesInitiate = async () => {
+        try {
+            const competitorRates: CompetitorType[] = await GetCompetitorsRates()
+            competitorRates.forEach((competitor) => {
+                switch (competitor.name) {
+                    case "MoneyMex":
+                        setAudirrMoneyMex(competitor.audirr)
+                        setIrraudMoneyMex(competitor.irraud)
+                        break
+                    case "Rosecap":
+                        setAudirrRosecap(competitor.audirr)
+                        setIrraudRosecap(competitor.irraud)
+                        break
+                    case "Seyhoon":
+                        setAudirrSeyhoon(competitor.audirr)
+                        setIrraudSeyhoon(competitor.irraud)
+                        break
+                    case "Javadi":
+                        setAudirrJavadi(competitor.audirr)
+                        setIrraudJavadi(competitor.irraud)
+                        break
+                    case "Express":
+                        setAudirrExpress(competitor.audirr)
+                        setIrraudExpress(competitor.irraud)
+                        break
+                    case "Kangroos":
+                        setAudirrKangroos(competitor.audirr)
+                        setIrraudKangroos(competitor.irraud)
+                        break
+                    case "Roomi":
+                        setAudirrRoomi(competitor.audirr)
+                        setIrraudRoomi(competitor.irraud)
+                        break
+                    case "Afshar":
+                        setAudirrAfshar(competitor.audirr)
+                        setIrraudAfshar(competitor.irraud)
+                        break
+                    default:
+                    break
+                }
+              })        
+        } catch (error) {
+          console.error('Error fetching Rates:', error)
         }
     }
 
     //------------------------------
-    //---Competitor Rates Handler
-    //------------------------------
-    const MoneyMexaudirrHandler = (e) => {dispatch(updateaudirrMoneyMex(audirrMoneyMex))}
-    const MoneyMexirraudHandler = (e) => {dispatch(updateirraudMoneyMex(irraudMoneyMex))}
+    useEffect(() => {
+        ordersBalanceInitiate()
+        assetBalanceInitiate()
+        irrRatesInitiate()
+        audRatesInitiate()
+        audMarginsInitiate()
+        SpecialRatesInitiate()
+        competitorRatesInitiate()
+    }, [])
 
-    const RosecpaudirrHandler = (e) => {dispatch(updateaudirrRosecap(audirrRosecap))}
-    const RosecpirraudHandler = (e) => {dispatch(updateirraudRosecap(irraudRosecap))}
-
-    const SeyhoonaudirrHandler = (e) => {dispatch(updateaudirrSeyhoon(audirrSeyhoon))}
-    const SeyhoonirraudHandler = (e) => {dispatch(updateirraudSeyhoon(irraudSeyhoon))}
-    const JavadiaudirrHandler = (e) => {dispatch(updateaudirrJavadi(audirrJavadi))}
-    const JavadiirraudHandler = (e) => {dispatch(updateirraudJavadi(irraudJavadi))}
-
-    const ExpressaudirrHandler = (e) => {dispatch(updateaudirrExpress(audirrExpress))}
-    const ExpressirraudHandler = (e) => {dispatch(updateirraudExpress(irraudExpress))}
-
-    const KangroosaudirrHandler = (e) => {dispatch(updateaudirrKangroos(audirrKangroos))}
-    const KangroosirraudHandler = (e) => {dispatch(updateirraudKangroos(irraudKangroos))}
-
-    const RoomiaudirrHandler = (e) => {dispatch(updateaudirrRoomi(audirrRoomi))}
-    const RoomiirraudHandler = (e) => {dispatch(updateirraudRoomi(irraudRoomi))}
-
-    const AfsharaudirrHandler = (e) => {dispatch(updateaudirrAfshar(audirrAfshar))}
-    const AfsharirraudHandler = (e) => {dispatch(updateirraudAfshar(irraudAfshar))}
-
-    //------------------------------
-    //---Competitors Max and Min Rates
-    //------------------------------
-    const MaxCompetitors = () => {
-        return Math.max(audirrMoneyMex, audirrRosecap, audirrSeyhoon, audirrJavadi, audirrExpress, audirrKangroos, audirrRoomi, audirrAfshar)
-    }
-
-    const MinCompetitors = () => {
-        const irraudList = [irraudMoneyMex, irraudRosecap, irraudSeyhoon, irraudJavadi, irraudExpress, irraudKangroos, irraudRoomi, irraudAfshar]
-        const nonZeroList = irraudList.filter(rate => rate > 0)
-    
-        return nonZeroList.length > 0 ? Math.min(...nonZeroList) : 0
+    //---Average Rates
+    const AverageRateInitiate = async (days: number) => {
+        try {
+            const averageRates: PairType[] = await GetAverageRate(days)
+            setAudirrAverage(averageRates.audirr)
+            setIrraudAverage(averageRates.irraud)
+            console.log(audirrAverage, irraudAverage)
+        } catch (error) {
+          console.error('Error fetching avereagre rates:', error)
+        }
     }
 
     useEffect(() => {
-        setAudirrMax(MaxCompetitors())
-        dispatch(updateaudirrMax(audirrMax))
+        AverageRateInitiate(days)
+    }, [days])
+
+    //---Competitorm Max & Min Rates
+    useEffect(() => {
+        const audirrList = [audirrMoneyMex, audirrRosecap, audirrSeyhoon, audirrJavadi, audirrExpress, audirrKangroos, audirrRoomi, audirrAfshar]
+        const audirrMax = Math.max(...audirrList)
+        setAudirrMax(audirrMax)
     }, [audirrMoneyMex, audirrRosecap, audirrSeyhoon, audirrJavadi, audirrExpress, audirrKangroos, audirrRoomi, audirrAfshar])
+
     useEffect(() => {
-        setIrraudMin(MinCompetitors())
-        dispatch(updateirraudMin(irraudMin))
+        const irraudList = [irraudMoneyMex, irraudRosecap, irraudSeyhoon, irraudJavadi, irraudExpress, irraudKangroos, irraudRoomi, irraudAfshar]
+        const nonZeroList = irraudList.filter(c => c > 0)
+        const irraudMin = nonZeroList.length > 0 ? Math.min(...nonZeroList): 0
+        setIrraudMin(irraudMin)
     }, [irraudMoneyMex, irraudRosecap, irraudSeyhoon, irraudJavadi, irraudExpress, irraudKangroos, irraudRoomi, irraudAfshar])
 
+    //------------------------------
+    //---Competitor Rates Handler
+    //------------------------------
+    const competitorsHandler = async (name: string, pair: string, rate: PairType) => {
+        try {
+            await SaveCompetitorsRate(name, pair, rate)
+        } catch (error) {
+          console.error('Error saving rates:', error)
+        }
+    }
+
+    const audirrMoneyMexHandler = () => {competitorsHandler("MoneyMex", "AUDIRR", audirrMoneyMex)}
+    const irraudMoneyMexHandler = () => {competitorsHandler("MoneyMex", "IRRAUD", irraudMoneyMex)}
+    const audirrRosecapHandler = () => {competitorsHandler("Rosecap", "AUDIRR", audirrRosecap)}
+    const irraudRosecapHandler = () => {competitorsHandler("Rosecap", "IRRAUD", irraudRosecap)}
+    const audirrSeyhoonHandler = () => {competitorsHandler("Seyhoon", "AUDIRR", audirrSeyhoon)}
+    const irraudSeyhoonHandler = () => {competitorsHandler("Seyhoon", "IRRAUD", irraudSeyhoon)}
+    const audirrJavadiHandler = () => {competitorsHandler("Javadi", "AUDIRR", audirrJavadi)}
+    const irraudJavadiHandler = () => {competitorsHandler("Javadi", "IRRAUD", irraudJavadi)}
+    const audirrExpressHandler = () => {competitorsHandler("Express", "AUDIRR", audirrExpress)}
+    const irraudExpressHandler = () => {competitorsHandler("Express", "IRRAUD", irraudExpress)}
+    const audirrKangroosHandler = () => {competitorsHandler("Kangroos", "AUDIRR", audirrKangroos)}
+    const irraudKangroosHandler = () => {competitorsHandler("Kangroos", "IRRAUD", irraudKangroos)}
+    const audirrRoomiHandler = () => {competitorsHandler("Roomi", "AUDIRR", audirrRoomi)}
+    const irraudRoomiHandler = () => {competitorsHandler("Roomi", "IRRAUD", irraudRoomi)}
+    const audirrAfsharHandler = () => {competitorsHandler("Afshar", "AUDIRR", audirrAfshar)}
+    const irraudAfsharHandler = () => {competitorsHandler("Afshar", "IRRAUD", irraudAfshar)}
+    
     //------------------------------
     return (
         <>
@@ -366,7 +610,6 @@ export const Dashboard = () => {
                                 </BoxHeader>
                                 <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
                                     <SpecialRate
-                                        fixedRate={audirrRate}
                                         dataSource={audirrSpecial}
                                     />
                                 </BoxContent>
@@ -382,7 +625,6 @@ export const Dashboard = () => {
                                 </BoxHeader>
                                 <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
                                     <SpecialRate
-                                        fixedRate={irraudRate}
                                         dataSource={irraudSpecial}
                                     />
                                 </BoxContent>
@@ -460,7 +702,7 @@ export const Dashboard = () => {
                             <CustomBox>
                                 <BoxHeader
                                     style={{
-                                        width: "10vw",
+                                        width: "13vw",
                                         marginLeft: "1vw",
                                         justifyContent: "flex-start"
                                     }}
@@ -480,15 +722,14 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setDays(value)
                                         }}
-                                        onKeyDown={DaysHandler}
                                     />
                                     <Title>days</Title>
                                 </BoxHeader>
-                                <BoxContent style={{width: "10vw", marginRight: "2vw"}}>
+                                <BoxContent style={{width: "14vw", marginRight: "2vw"}}>
                                     <Title>Average AUD / IRR</Title>
                                     <Content>{audirrAverage?.toLocaleString("en-us")}</Content>
                                 </BoxContent>
-                                <BoxContent style={{width: "10vw", marginRight: "2vw", marginBottom: "20vw"}}>
+                                <BoxContent style={{width: "14vw", marginRight: "2vw", marginBottom: "20vw"}}>
                                     <Title>Average IRR / AUD</Title>
                                     <Content>{irraudAverage?.toLocaleString("en-us")}</Content>
                                 </BoxContent>
@@ -529,7 +770,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrMoneyMex(value)
                                         }}
-                                        onKeyDown={MoneyMexaudirrHandler}
+                                        onKeyDown={audirrMoneyMexHandler}
                                     />
                                     <InputNumber
                                         size="small"
@@ -542,7 +783,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudMoneyMex(value)
                                         }}
-                                        onKeyDown={MoneyMexirraudHandler}
+                                        onKeyDown={irraudMoneyMexHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -560,7 +801,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrRosecap(value)
                                         }}
-                                        onKeyDown={RosecpaudirrHandler}
+                                        onKeyDown={audirrRosecapHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -573,7 +814,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudRosecap(value)
                                         }}
-                                        onKeyDown={RosecpirraudHandler}
+                                        onKeyDown={irraudRosecapHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -591,7 +832,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrSeyhoon(value)
                                         }}
-                                        onKeyDown={SeyhoonaudirrHandler}
+                                        onKeyDown={audirrSeyhoonHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -604,7 +845,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudSeyhoon(value)
                                         }}
-                                        onKeyDown={SeyhoonirraudHandler}
+                                        onKeyDown={irraudSeyhoonHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -622,7 +863,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrJavadi(value)
                                         }}
-                                        onKeyDown={JavadiaudirrHandler}
+                                        onKeyDown={audirrJavadiHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -635,7 +876,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudJavadi(value)
                                         }}
-                                        onKeyDown={JavadiirraudHandler}
+                                        onKeyDown={irraudJavadiHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -653,7 +894,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrExpress(value)
                                         }}
-                                        onKeyDown={ExpressaudirrHandler}
+                                        onKeyDown={audirrExpressHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -666,7 +907,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudExpress(value)
                                         }}
-                                        onKeyDown={ExpressirraudHandler}
+                                        onKeyDown={irraudExpressHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -684,7 +925,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrKangroos(value)
                                         }}
-                                        onKeyDown={KangroosaudirrHandler}
+                                        onKeyDown={audirrKangroosHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -697,7 +938,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudKangroos(value)
                                         }}
-                                        onKeyDown={KangroosirraudHandler}
+                                        onKeyDown={irraudKangroosHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw"}}>
@@ -715,7 +956,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrRoomi(value)
                                         }}
-                                        onKeyDown={RoomiaudirrHandler}
+                                        onKeyDown={audirrRoomiHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -728,7 +969,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudRoomi(value)
                                         }}
-                                        onKeyDown={RoomiirraudHandler}
+                                        onKeyDown={irraudRoomiHandler}
                                     />
                                 </BoxContent>
                                 <BoxContent style={{width: "20vw", marginLeft: "1vw", marginBottom: "1vw"}}>
@@ -746,7 +987,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setAudirrAfshar(value)
                                         }}
-                                        onKeyDown={AfsharaudirrHandler}
+                                        onKeyDown={audirrAfsharHandler}
                                     />
                                     <InputNumber
                                         variant="filled"
@@ -759,7 +1000,7 @@ export const Dashboard = () => {
                                         onChange={(value)=>{
                                             setIrraudAfshar(value)
                                         }}
-                                        onKeyDown={AfsharirraudHandler}
+                                        onKeyDown={irraudAfsharHandler}
                                     />
                                 </BoxContent>
                             </CustomBox>

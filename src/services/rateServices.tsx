@@ -1,9 +1,20 @@
 import {
+  PairType,
   RateType,
   MarginType,
   SpecialRateType,
-  CompetitorType
+  CompetitorType,
+  OrdersBalanceType,
+  AssetBalanceType
 } from "src/definition/interfaces"
+
+//------------------------------
+//---Average Rates
+//------------------------------
+export const GetAverageRate = async (days: number): Promise<PairType> => {
+  const average: PairType = { audirr: 508000, irraud: 515000 }
+  return average
+}
 
 //------------------------------
 //---IRR Rates
@@ -30,7 +41,7 @@ export const GetIrrRates = async (): Promise<RateType[]> => {
     { pair: "TRLIRR", rate: 180000 },
 
     { pair: "IRRUSD", rate: 810000 },
-    { pair: "USDIRR", rate: 200000 }
+    { pair: "USDIRR", rate: 800000 }
   ]
   return rates
 }
@@ -61,7 +72,7 @@ export const SaveAudMargin = async (pair: string, margin: number): Promise<void>
 //------------------------------
 export const GetAudMargins = async (): Promise<MarginType[]> => {
   const margins: MarginType[] = [
-    { pair: "AUDAED", margin: 0.02 },
+    { pair: "AUDAED", margin: 0.01 },
     { pair: "AUDCAD", margin: 0.02 },
     { pair: "AUDEUR", margin: 0.02 },
     { pair: "AUDUSD", margin: 0.02 }
@@ -79,25 +90,26 @@ export const SaveSpecialRates = async (specials:SpecialRateType[], pair: string)
 export const GetSpecialRates = async (pair: string): Promise<SpecialRateType[]> => {
   const specialsAudIrr: SpecialRateType[] = [
     {
-      amount: 20000,
-      over: 900,
-      rate: 51100
-    },
-    {
-      amount: 10000,
+      amount: 1000,
       over: 700,
       rate: 51300
-    }   
-  ]
-  const specialsIrrAUD: SpecialRateType[] = [
+    },
     {
       amount: 2000,
       over: 900,
-      rate: 50900
-    },
+      rate: 51100
+    }
+  ]
+
+  const specialsIrrAUD: SpecialRateType[] = [
     {
       amount: 3000,
       over: 700,
+      rate: 50900
+    },
+    {
+      amount: 2000,
+      over: 900,
       rate: 50700
     }
   ]
@@ -109,14 +121,14 @@ export const GetSpecialRates = async (pair: string): Promise<SpecialRateType[]> 
 //------------------------------
 //---Competitors Rates
 //------------------------------
-export const SaveCompetitorsRate = async (name: string, rate: RateType): Promise<void> => {
+export const SaveCompetitorsRate = async (name: string, pair: string, rate: number): Promise<void> => {
 }
 
 //------------------------------
 export const GetCompetitorsRates = async (): Promise<CompetitorType[]> => {
   const competitorsRates: CompetitorType[] = [
     {
-      name: "MuneyMex",
+      name: "MoneyMex",
       audirr: 500000,
       irraud: 520000
     },
@@ -159,3 +171,54 @@ export const GetCompetitorsRates = async (): Promise<CompetitorType[]> => {
   return competitorsRates
 }
 
+//------------------------------
+//---Orders Balance
+//------------------------------
+export const GetOrdersBalance = async (): Promise<OrdersBalanceType[]> => {
+  const ordersBalance: OrdersBalanceType[] = [
+    {
+      currency: "AUD",
+      balance: 243279,
+      urgent: 89000
+    },
+    {
+      currency: "IRR",
+      balance: 45789250000,
+      urgent: 10000000000
+    }
+  ]
+  return ordersBalance
+}
+
+//------------------------------
+//---Asset Balance
+//------------------------------
+export const GetAssetBalance = async (): Promise<AssetBalanceType[]> => {
+  const assetBalance: AssetBalanceType[] = [
+    {
+      currency: "AUD",
+      balance: 50000
+    },
+    {
+      currency: "AED",
+      balance: 270345
+    },
+    {
+      currency: "CAD",
+      balance: 3000
+    },
+    {
+      currency: "EUR",
+      balance: 3000
+    },
+    {
+      currency: "TRL",
+      balance: 10000
+    },
+    {
+      currency: "USD",
+      balance: 9000
+    },
+  ]
+  return assetBalance
+}

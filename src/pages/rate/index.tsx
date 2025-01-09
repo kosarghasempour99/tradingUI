@@ -18,7 +18,6 @@ import {
     GetAudMargins,
     SaveSpecialRates,
     GetSpecialRates,
-    SaveCompetitorsRate,
     GetCompetitorsRates
 }  from "src/services/rateServices"
 
@@ -215,7 +214,6 @@ export const Rate = () => {
         try {
             const specialRates: SpecialRateType[] = await GetSpecialRates("AUDIRR")
             setAudirrSpecial(specialRates)
-            console.log(audirrSpecial)
         } catch (error) {
           console.error('Error fetching special rates:', error)
         }
@@ -311,21 +309,13 @@ export const Rate = () => {
     const audirrSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
         setAudirrSpecial(specialRate)
-
-        //------------------------------
-        //---Save AUD/IRR Special Rates
-        //------------------------------
-
+        SaveSpecialRates(audirrSpecial, "AUDIRR")
     }
 
     const irraudSpecialHandler = (data: {amount: number, over: number}) => {
         const specialRate = data.map(({ amount, over }) => ({ amount, over }))
         setIrraudSpecial(specialRate)
-
-        //------------------------------
-        //---Save IRR/AUD Special Rates
-        //------------------------------
-
+        SaveSpecialRates(irraudSpecial, "IRRAUD")
     }
 
     //------------------------------

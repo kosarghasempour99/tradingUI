@@ -20,6 +20,11 @@ interface CustomerType {
 }
 
 //------------------------------Rate
+interface PairType {
+  audirr: number
+  irraud: number
+}
+
 interface RateType {
   pair: string
   rate: number
@@ -40,4 +45,15 @@ interface CompetitorType {
   name: string
   audirr: number
   irraud: number
+}
+
+interface OrdersBalanceType {
+  currency: string
+  balance: number
+  urgent: number
+}
+
+interface AssetBalanceType {
+  currency: string
+  balance: number
 }
