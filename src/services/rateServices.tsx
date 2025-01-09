@@ -137,23 +137,23 @@ export const GetCompetitorsRates = async (): Promise<CompetitorType[]> => {
     },
     {
       name: "Express",
-      audirr: 500000,
+      audirr: 490000,
       irraud: 520000
     },
     {
       name: "Kangroos",
-      audirr: 500000,
-      irraud: 520000
+      audirr: 495000,
+      irraud: 515000
     },
     {
       name: "Roomi",
-      audirr: 500000,
-      irraud: 520000
+      audirr: 490000,
+      irraud: 0
     },
     {
       name: "Afshar",
-      audirr: 500000,
-      irraud: 520000
+      audirr: 495000,
+      irraud: 0
     }
   ]
   return competitorsRates

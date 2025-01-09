@@ -196,18 +196,28 @@ export const Rate = () => {
     const competitorsInitiate = async () => {
         try {
             const competitorsRates: CompetitorType[] = await GetCompetitorsRates()
-            competitorsRates.forEach((competitor) => {
-                switch (competitor.name) {
-                    case "AUDAED":
-                        setAudaedMargin(competitor.margin)
-                        break
+            const audirrMax = Math.max(...competitorsRates.map(c => c.audirr))
 
-                    default:
-                    break
-                }
-              })        
+            const nonZeroList = competitorsRates.filter(c => c.irraud > 0)
+            const irraudMin = Math.min(...nonZeroList.map(c => c.irraud)) 
+            
+            const max = audirrMax <= 0 ? 0 : (audirrMax + Benefit.Market)
+            const min = irraudMin <= 0 ? 0 : irraudMin
+            setAudirrMarket(Math.round(max/1000)*1000)
+            setIrraudMarket(Math.round(min/1000)*1000)
         } catch (error) {
-          console.error('Error fetching margins:', error)
+          console.error('Error fetching competitors:', error)
+        }
+    }
+
+    //---Special Rates
+    const SpecialRatesInitiate = async () => {
+        try {
+            const specialRates: SpecialRateType[] = await GetSpecialRates("AUDIRR")
+            setAudirrSpecial(specialRates)
+            console.log(audirrSpecial)
+        } catch (error) {
+          console.error('Error fetching special rates:', error)
         }
     }
 
@@ -217,6 +227,7 @@ export const Rate = () => {
         audRatesInitiate()
         audMarginsInitiate()
         competitorsInitiate()
+        SpecialRatesInitiate()
     }, [])
 
     //------------------------------
@@ -279,16 +290,6 @@ export const Rate = () => {
     //------------------------------
     //---Suggestions Rates
     //------------------------------
-    // useEffect(() => {
-    //     const max = audirrMax <= 0 ? 0 : (audirrMax + Benefit.Market)
-    //     const min = irraudMin <= 0 ? 0 : irraudMin
-    //     setAudirrMarket(Math.round(max/1000)*1000)
-    //     setIrraudMarket(Math.round(min/1000)*1000)
-
-    //     dispatch(updateaudirrMarket(audirrMarket))
-    //     dispatch(updateirraudMarket(irraudMarket))
-    // })
-
     useEffect(() => {
         const buy = audirrRate * (1 + Benefit.AUDIRR)
         const sell = irraudRate * (1 - Benefit.IRRAUD)
