@@ -3,9 +3,7 @@ import {
   RateType,
   MarginType,
   SpecialRateType,
-  CompetitorType,
-  OrdersBalanceType,
-  AssetBalanceType
+  CompetitorType
 } from "src/definition/interfaces"
 
 //------------------------------
@@ -169,56 +167,4 @@ export const GetCompetitorsRates = async (): Promise<CompetitorType[]> => {
     }
   ]
   return competitorsRates
-}
-
-//------------------------------
-//---Orders Balance
-//------------------------------
-export const GetOrdersBalance = async (): Promise<OrdersBalanceType[]> => {
-  const ordersBalance: OrdersBalanceType[] = [
-    {
-      currency: "AUD",
-      balance: 243279,
-      urgent: 89000
-    },
-    {
-      currency: "IRR",
-      balance: 45789250000,
-      urgent: 10000000000
-    }
-  ]
-  return ordersBalance
-}
-
-//------------------------------
-//---Asset Balance
-//------------------------------
-export const GetAssetBalance = async (): Promise<AssetBalanceType[]> => {
-  const assetBalance: AssetBalanceType[] = [
-    {
-      currency: "AUD",
-      balance: 50000
-    },
-    {
-      currency: "AED",
-      balance: 270345
-    },
-    {
-      currency: "CAD",
-      balance: 3000
-    },
-    {
-      currency: "EUR",
-      balance: 3000
-    },
-    {
-      currency: "TRL",
-      balance: 10000
-    },
-    {
-      currency: "USD",
-      balance: 9000
-    },
-  ]
-  return assetBalance
 }

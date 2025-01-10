@@ -18,10 +18,13 @@ import {
     GetAudMargins,
     GetSpecialRates,
     SaveCompetitorsRate,
-    GetCompetitorsRates,
+    GetCompetitorsRates
+}  from "src/services/rateServices"
+
+import {
     GetOrdersBalance,
     GetAssetBalance
-}  from "src/services/rateServices"
+}  from "src/services/balanceServices"
 
 import {
     PairType,
@@ -50,7 +53,7 @@ import {
 } from "./style"
 
 //------------------------------
-//---Orders Header
+//---Dashboard
 //------------------------------
 export const Dashboard = () => {
     //---Balance
@@ -60,14 +63,35 @@ export const Dashboard = () => {
     const [irrUrgentBalance, setIrrUrgentBalance] = useState<number>(0)
 
     const [audBalance, setAudBalance] = useState<number>(0)
+    const [audMelBalance, setAudMelBalance] = useState<number>(0)
+    const [audSydBalance, setAudSydBalance] = useState<number>(0)
+    const [audTehBalance, setAudTehBalance] = useState<number>(0)
+
     const [aedBalance, setAedBalance] = useState<number>(0)
-    const [cadBalance, setCadBalance] = useState<number>(0)
+    const [aedMelBalance, setAedMelBalance] = useState<number>(0)
+    const [aedSydBalance, setAedSydBalance] = useState<number>(0)
+    const [aedTehBalance, setAedTehBalance] = useState<number>(0)
+
     const [eurBalance, setEurBalance] = useState<number>(0)
-    const [trlBalance, setTrlBalance] = useState<number>(0)
+    const [eurMelBalance, setEurMelBalance] = useState<number>(0)
+    const [eurSydBalance, setEurSydBalance] = useState<number>(0)
+    const [eurTehBalance, setEurTehBalance] = useState<number>(0)
+
     const [usdBalance, setUsdBalance] = useState<number>(0)
+    const [usdMelBalance, setUsdMelBalance] = useState<number>(0)
+    const [usdSydBalance, setUsdSydBalance] = useState<number>(0)
+    const [usdTehBalance, setUsdTehBalance] = useState<number>(0)
 
     const [equalAUDBalance, setEqualAUDBalance] = useState<number>(0)
     const [availableAED, setAvailableAED] = useState<number>(0)
+
+    const [balances, setBalances] = useState([])
+    const audColor = Color.BLUE
+    const aedColor = Color.GREEN
+    const eurColor = Color.YELLOW
+    const usdColor = Color.RED_LIGHT
+    const customColors = [audColor, aedColor, eurColor, usdColor]
+
 
     //---Average Rates
     const [days, setDays] = useState<number>(2)
@@ -130,23 +154,6 @@ export const Dashboard = () => {
     const [audirrMax, setAudirrMax] = useState<number>(0)
     const [irraudMin, setIrraudMin] = useState<number>(0)
 
-    //---Chart
-    const [currencies, setCurrencies] = useState([
-        {x: "AUD", y: audBalance},
-        {x: "AED", y: aedBalance/aedaudRate},
-        {x: "CAD", y: cadBalance},
-        {x: "EUR", y: eurBalance*(eurirrRate/irraudRate)},
-        {x: "TRL", y: trlBalance*(trlirrRate/irraudRate)},
-        {x: "USD", y: usdBalance*(usdirrRate/irraudRate)}
-    ])
-    const audColor = Color.BLUE
-    const aedColor = Color.GREEN
-    const cadColor = Color.BLACK
-    const eurColor = Color.BROWN_LIGHT
-    const trlColor = Color.YELLOW
-    const usdColor = Color.RED_LIGHT
-    const customColors = [audColor, aedColor, cadColor, eurColor, trlColor, usdColor]
-
     //------------------------------
     //---Initiate
     //------------------------------
@@ -180,22 +187,28 @@ export const Dashboard = () => {
             assetBalance.forEach((balance) => {
                 switch (balance.currency) {
                     case "AUD":
-                        setAudBalance(balance.balance)
+                        setAudMelBalance(balance.melbourne)
+                        setAudSydBalance(balance.sydney)
+                        setAudTehBalance(balance.tehran)
+                        setAudBalance(audMelBalance + audSydBalance + audTehBalance)
                         break
                     case "AED":
-                        setAedBalance(balance.balance)
-                        break
-                    case "CAD":
-                        setCadBalance(balance.balance)
+                        setAedMelBalance(balance.melbourne)
+                        setAedSydBalance(balance.sydney)
+                        setAedTehBalance(balance.tehran)
+                        setAedBalance(aedMelBalance + aedSydBalance + aedTehBalance)
                         break
                     case "EUR":
-                        setEurBalance(balance.balance)
-                        break
-                    case "TRL":
-                        setTrlBalance(balance.balance)
+                        setEurMelBalance(balance.melbourne)
+                        setEurSydBalance(balance.sydney)
+                        setEurTehBalance(balance.tehran)
+                        setEurBalance(eurMelBalance + eurSydBalance + eurTehBalance)
                         break
                     case "USD":
-                        setUsdBalance(balance.balance)        
+                        setUsdMelBalance(balance.melbourne)
+                        setUsdSydBalance(balance.sydney)
+                        setUsdTehBalance(balance.tehran)
+                        setUsdBalance(usdMelBalance + usdSydBalance + usdTehBalance)
                         break
                     default:
                     break
@@ -392,7 +405,6 @@ export const Dashboard = () => {
             const averageRates: PairType[] = await GetAverageRate(days)
             setAudirrAverage(averageRates.audirr)
             setIrraudAverage(averageRates.irraud)
-            console.log(audirrAverage, irraudAverage)
         } catch (error) {
           console.error('Error fetching avereagre rates:', error)
         }
@@ -401,6 +413,17 @@ export const Dashboard = () => {
     useEffect(() => {
         AverageRateInitiate(days)
     }, [days])
+
+    //---Balance
+    useEffect(() => {
+        const aud = audBalance + (aedBalance / aedaudRate) + (eurBalance * euraudRate) + (usdBalance / usdaudRate)
+        setEqualAUDBalance(aud)
+    }, [audBalance, aedBalance, eurBalance, usdBalance, aedaudRate, euraudRate, usdaudRate])
+
+    useEffect(() => {
+        const aed = aedTehBalance + (usdTehBalance / usdaudRate) * audaedRate + (eurTehBalance / euraudRate) * audaedRate
+        setAvailableAED(aed)
+    }, [aedTehBalance, usdTehBalance, eurTehBalance, usdaudRate, euraudRate, audaedRate])
 
     //---Competitorm Max & Min Rates
     useEffect(() => {
@@ -415,6 +438,17 @@ export const Dashboard = () => {
         const irraudMin = nonZeroList.length > 0 ? Math.min(...nonZeroList): 0
         setIrraudMin(irraudMin)
     }, [irraudMoneyMex, irraudRosecap, irraudSeyhoon, irraudJavadi, irraudExpress, irraudKangroos, irraudRoomi, irraudAfshar])
+
+    //---Chart
+    useEffect(() => {
+        const currencies = [
+            {x: "AUD", y: audBalance},
+            {x: "AED", y: aedBalance},
+            {x: "EUR", y: eurBalance},
+            {x: "USD", y: usdBalance}
+        ]
+        setBalances(currencies)
+    }, [audBalance, aedBalance, eurBalance, usdBalance])    
 
     //------------------------------
     //---Competitor Rates Handler
@@ -530,7 +564,7 @@ export const Dashboard = () => {
                             <CustomBox>
                                 <BoxContent style={{width: "20vw", marginLeft: "5vw"}}>
                                     <PieChart
-                                        data={currencies}
+                                        data={balances}
                                         colors={customColors}
                                     />
                                 </BoxContent>
@@ -556,30 +590,12 @@ export const Dashboard = () => {
                                     </Content>
                                 </BoxContent>
                                 <BoxContent style={{width: "10vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
-                                    <div style={{ width: "10px", height: "10px", backgroundColor: cadColor}}></div>
-                                    <Title style={{width: "4vw"}}>
-                                        CAD
-                                    </Title>
-                                    <Content>
-                                        {FormatNumber(cadBalance,2)}
-                                    </Content>
-                                </BoxContent>
-                                <BoxContent style={{width: "10vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                                     <div style={{ width: "10px", height: "10px", backgroundColor: eurColor}}></div>
                                     <Title style={{width: "4vw"}}>
                                         EUR
                                     </Title>
                                     <Content>
                                         {FormatNumber(eurBalance,2)}
-                                    </Content>
-                                </BoxContent>
-                                <BoxContent style={{width: "10vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
-                                    <div style={{ width: "10px", height: "10px", backgroundColor: trlColor}}></div>
-                                    <Title style={{width: "4vw"}}>
-                                        TRL
-                                    </Title>
-                                    <Content>
-                                        {FormatNumber(trlBalance,2)}
                                     </Content>
                                 </BoxContent>
                                 <BoxContent style={{width: "10vw", marginLeft: "1vw", justifyContent: "flex-start", marginBottom: "1vw"}}>
@@ -616,14 +632,14 @@ export const Dashboard = () => {
                             </CustomBox>
             {/* ---IRR / AUD Special rates */}
                             <CustomBox>
-                                <BoxHeader style={{width: "15vw", marginRight: "10vw", marginTop: "4vw"}}>
+                                <BoxHeader style={{width: "20vw", marginRight: "8vw", marginTop: "4vw"}}>
                                     <YellowLine>
                                         <Header style={{width: "5vw", fontSize: "12px"}}>
                                             IRR /AUD
                                         </Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
+                                <BoxContent style={{marginTop: "1vw"}}>
                                     <SpecialRate
                                         dataSource={irraudSpecial}
                                     />

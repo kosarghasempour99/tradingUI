@@ -13,7 +13,14 @@ interface BaseRateProc {
 //------------------------------
 //---Orders Header
 //------------------------------
-export const SpecialRate: React.FC <BaseRateProc> = ({dataSource}) => { 
+export const SpecialRate: React.FC <BaseRateProc> = ({dataSource}) => {
+    //---Add Key
+    const enrichedDataSource = dataSource.map((item, index) => ({
+        ...item,
+        key: item.key || index.toString(),
+    }))
+
+    //------------------------------
     const columns: TableProps<SpecialRateType>['columns'] = [
         {
             title: 'Amount',
@@ -38,8 +45,11 @@ export const SpecialRate: React.FC <BaseRateProc> = ({dataSource}) => {
 
 //------------------------------
     return (
-        <Table<DataType>
-            columns={columns} dataSource={dataSource}
+        <Table<SpecialRateType>
+            columns={columns}
+            dataSource={enrichedDataSource}
+            pagination={false}
+            bordered
         />
     )
 }
