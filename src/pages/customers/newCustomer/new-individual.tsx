@@ -1,5 +1,6 @@
 import { useEffect, useState }      from "react"
-import { useNavigate} from "react-router-dom"
+import { useNavigate}   from "react-router-dom"
+import moment          from "moment"
 
 import {
     DatePicker,
@@ -9,19 +10,19 @@ import {
 } from 'antd'
 
 import { CustomBox }    from "src/components/core/CustomBox"
-
-import {
-    GetCountries
-}  from "src/services/commonServices"
+import { GetCountries }  from "src/services/commonServices"
 
 import { CountryType }  from "src/definition/customer-interfaces"
 import { Color }        from "src/definition/color"
+
+import { AddressModal } from "./modal/address"
 
 import {
     RowContainer,
     BoxContainer,
     BoxContent,
-    Title
+    Title,
+    Content
 } from "../../style"
 
 //------------------------------
@@ -64,7 +65,7 @@ export const NewIndividual = () => {
         countyriesInitiate()
     }, [])
 
-    //---COuntries Option
+    //---Countries Option
     useEffect(() => {
         const options = countries.map((country) => ({
             value: country.name,
@@ -108,6 +109,17 @@ export const NewIndividual = () => {
     
       const cancelHandler = () => {
         navigate("/new-order")
+    }
+
+    //------------------------------
+    //---Show Modals
+    //------------------------------
+    const [addressModalShow, setAddressModalShow] = useState(false)
+    const showAddressModal = () => setAddressModalShow(true)
+
+    const SaveAddress = () => {
+        console.log("Save Address")
+        setAddressModalShow(false)
     }
 
     //------------------------------
@@ -229,8 +241,8 @@ export const NewIndividual = () => {
                                     </Title>
                                     <DatePicker
                                         format="DD MMM YYYY"
-                                        placeholder="Date of Birth"
-                                        value={dateOfBirth}
+                                        placeholder="DD MMM YYYY"
+                                        value={dateOfBirth ? moment(dateOfBirth, "DD MMM YYYY") : null}
                                         style={{width: "15vw"}}
                                         onChange={(date, dateString) => setDateOfBirth(dateString)}
                                     />
@@ -244,22 +256,56 @@ export const NewIndividual = () => {
                                         value={email}
                                         style={{width: "15vw"}}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        onBlur={emailHandler}
                                     />
                                 </BoxContent>
                             </CustomBox>
                         </BoxContainer>
-                        <BoxContainer style={{width: "55vw", marginRight: "1vw"}}>
-                            <p>01-2</p>
+                        <BoxContainer style={{width: "55vw", marginRight: "1vw", flexDirection: "column", alignItems: "flex-start"}}>
+                            <CustomBox>
+                                <BoxContent
+                                    style={{marginLeft: "1vw", marginTop: "1vw", cursor: "pointer"}}
+                                    onClick={showAddressModal}
+                                >
+                                    <Title style={{width: "6vw", color: Color.BLUE_DARK}}>
+                                        Address
+                                    </Title>
+                                    <Content style={{color: Color.RED, fontSize: "20px"}}>
+                                        +
+                                    </Content>
+                                </BoxContent>
+                                <BoxContent style={{marginLeft: "1vw"}}>
+                                    <Content style={{color: Color.RED, fontSize: "16px"}}>
+                                        -
+                                    </Content>
+                                </BoxContent>
+                            </CustomBox>
                         </BoxContainer>
                     </RowContainer>
                     <RowContainer style={{width: "87vw"}}>
-                        <BoxContainer style={{width: "100%", marginRight: "1vw"}}>
-                            <p>02</p>
+                        <BoxContainer style={{width: "100%", marginRight: "1vw", flexDirection: "column", alignItems: "flex-start"}}>
+                        <CustomBox>
+                                <BoxContent style={{marginLeft: "1vw", marginTop: "1vw"}}>
+                                    <Title style={{width: "6vw", color: Color.BLUE_DARK}}>
+                                        Document
+                                    </Title>
+                                    <Content style={{color: Color.RED, fontSize: "20px"}}>
+                                        +
+                                    </Content>
+                                </BoxContent>
+                                <BoxContent style={{marginLeft: "1vw"}}>
+                                </BoxContent>
+                            </CustomBox>
                         </BoxContainer>
                     </RowContainer>
                 </CustomBox>
             </RowContainer>
+
+            <AddressModal
+                isVisible={addressModalShow}
+                countriesOptions={countriesOptions}
+                onSave={SaveAddress}
+                onCancel={() => setAddressModalShow(false)}
+            />
         </div>
     )
 }

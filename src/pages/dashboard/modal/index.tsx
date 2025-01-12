@@ -3,9 +3,12 @@ import { Modal, Button } from 'antd'
 
 import { BranchShowBalanceType }    from 'src/definition/balance-interfaces'
 import { FormatNumber } from "src/components/common/format"
+import { Color }        from "src/definition/color"
 
 import {
     BoxHeader,
+    YellowLine,
+    Header,
     Title,
     Content,
 } from "../style"
@@ -31,13 +34,34 @@ export const BalanceModal: React.FC<CustomModalProps> = ({
 }) => {
     return (
         <Modal
-            title={title}
+            // title={title}
+            title={
+                <BoxHeader style={{width: "25vw", marginLeft: "1vw"}}>
+                    <YellowLine>
+                        <Header>{title}</Header>
+                    </YellowLine>
+                </BoxHeader>
+            }
             open={isVisible}
             onOk={onOk}
             footer={
-            <Button key="submit" type="primary" onClick={onOk}>
-                OK
-            </Button>
+                <Button
+                    variant="solid"
+                    size="large"
+                    style={{
+                        width: "8vw",
+                        fontFamily: "Montserrat",
+                        fontSize: "12px",
+                        fontWeight: "700",
+                        color: Color.WHITE,
+                        backgroundColor: Color.BLUE_DARK,
+                        marginTop: "2vw",
+                        cursor: "pointer",
+                    }}
+                    onClick={onOk}
+                >
+                    OK
+                </Button>
             }
             centered={centered}
         >
