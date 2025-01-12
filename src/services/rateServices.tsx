@@ -4,7 +4,7 @@ import {
   MarginType,
   SpecialRateType,
   CompetitorType
-} from "src/definition/interfaces"
+} from "src/definition/rate-interfaces"
 
 //------------------------------
 //---Average Rates

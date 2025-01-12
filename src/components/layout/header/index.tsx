@@ -40,14 +40,8 @@ export const Header = () => {
     //---Profile Handling
     //------------------------------
     const [openProfileModal, setOpenProfileModal] = useState(false)
-
-    const handleProfileModal = () => {
-        setOpenProfileModal(true)
-    }
-
-    const handleCloseProfileModal = () => {
-        setOpenProfileModal(false)
-    }
+    const handleProfileModal = () => { setOpenProfileModal(true) }
+    const handleCloseProfileModal = () => { setOpenProfileModal(false) }
 
     //------------------------------
     //---Logout Handler
@@ -113,7 +107,7 @@ export const Header = () => {
                 </ItemLink>
                 <ItemLink
                   style = {{fontSize: "12px"}}
-                  to={"/customers"}
+                  to={"/new-customer"}
                 >
                   Customers
                 </ItemLink>

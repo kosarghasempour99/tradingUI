@@ -1,19 +1,17 @@
 import { useDispatch }  from "react-redux"
 import { useState }     from "react"
-// import { toast }        from "react-toastify"
-// import axios            from "axios"
 
-import { Input }  from 'antd'
+import { Input, Button }  from 'antd'
+
 import Modal      from "@mui/material/Modal"
 import Box        from "@mui/material/Box"
 
 
-import { BtnComponent }   from "src/components/core/Button"
+// import { BtnComponent }   from "src/components/core/Button"
 import { Typography }     from "src/components/core/Typography"
 import { IconViewer }     from "src/components/core/IconViewer"
-// import { InputText }      from "src/components/core/Input/InputText"
 
-import {UserProps}  from "src/definition/interfaces"
+import { UserProps} from "src/definition/customer-interfaces"
 import { Color }    from "src/definition/color"
 
 import { ChangePassword } from "src/services/loginServices"
@@ -228,31 +226,39 @@ export const ProfileModal: React.FC<ModalProps> = ({
         <HRBottom />
 
         <BoxFooter>
-          <BtnComponent
-            label="Cancel"
-            variant="outline"
+          <Button
+            variant="solid"
+            size="large"
             style={{
-              color: Color.BLUE_DARK,
-              width: "121px",
-              background: "transparent",
-              marginRight: "16px",
-              fontSize: "14px",
+              width: "8vw",
+              marginRight: "2vw",
+              fontFamily: "Montserrat",
+              fontSize: "12px",
               fontWeight: "700",
+              color: Color.BLUE_DARK,
+              backgroundColor: Color.WHITE,
               cursor: "pointer",
             }}
-            onClick={() => closeModalResetStates()}
-          />
-          <BtnComponent
-            label="Confirm"
-            variant="contained"
+            onClick={errorHandler}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="solid"
+            size="large"
             style={{
-              background: Color.BLUE_DARK,
-              width: "131px",
-              fontSize: "14px",
+              width: "8vw",
+              fontFamily: "Montserrat",
+              fontSize: "12px",
+              fontWeight: "700",
+              color: Color.WHITE,
+              backgroundColor: Color.BLUE_DARK,
               cursor: "pointer",
             }}
-            onClick={() => errorHandler()}
-          />
+            onClick={errorHandler}
+          >
+            Confirm
+          </Button>
         </BoxFooter>
       </Box>
     </Modal>

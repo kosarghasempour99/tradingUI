@@ -1,7 +1,7 @@
 import {
     OrdersBalanceType,
     AssetBalanceType
-  } from "src/definition/interfaces"
+  } from "src/definition/rate-interfaces"
    
   //------------------------------
   //---Orders Balance

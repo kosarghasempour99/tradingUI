@@ -4,9 +4,9 @@ import { Helmet }   from "react-helmet"
 import { CustomersHeader } from "./header"
 
 import { GetAllCustomers } from "src/services/customers/getAll"
-import { CustomersTable }  from "../../components/core/Table/customersTable"
+import { CustomersTable }  from "src/components/core/Table/customersTable"
 
-import { CustomerType } from 'src/definition/interfaces'
+import { CustomerType } from 'src/definition/customer-interfaces'
 
 import { BoxContainer } from "../style"
 
@@ -21,7 +21,11 @@ export const Customers = () => {
     const fetchData = async () => {
         try {
           const customers = await GetAllCustomers()
-          setDataSource(customers)
+          const dataSourse = customers.map((customer) => ({
+            ...customer,
+            fullName: `${customer.firstName} ${customer.middleName ? customer.middleName + ' ' : ''}${customer.lastName}`
+          }))
+          setDataSource(dataSourse)
         } catch (error) {
           console.error('Error fetching customers:', error)
         } finally {

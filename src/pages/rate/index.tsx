@@ -6,9 +6,10 @@ import { InputNumber }    from "antd"
 import { FormatNumber } from "src/components/common/format"
 import { SpecialRate }  from "src/components/core/Table/specialTable"
 import { CustomBox }    from "src/components/core/CustomBox"
+import { Benefit }      from "src/definition/domain"
+
 import { RateHeader }   from "./header"
 
-import { Benefit }      from "src/definition/domain"
 import {
     SaveIrrRate,
     GetIrrRates,
@@ -26,7 +27,7 @@ import {
     MarginType,
     SpecilaRateType,
     CompetitorType
-  } from "src/definition/interfaces"
+  } from "src/definition/rate-interfaces"
   
 import {
     RowContainer,
@@ -43,7 +44,6 @@ import {
 //---Rate
 //------------------------------
 export const Rate = () => {
-
     //---IRR Rate
     const [audirrRate, setAudirrRate] = useState<number>(0)
     const [irraudRate, setIrraudRate] = useState<number>(0)
@@ -214,6 +214,9 @@ export const Rate = () => {
         try {
             const specialRates: SpecialRateType[] = await GetSpecialRates("AUDIRR")
             setAudirrSpecial(specialRates)
+
+            const irraudSpecialRates: SpecialRateType[] = await GetSpecialRates("IRRAUD")
+            setIrraudSpecial(irraudSpecialRates)
         } catch (error) {
           console.error('Error fetching special rates:', error)
         }
@@ -227,6 +230,11 @@ export const Rate = () => {
         competitorsInitiate()
         SpecialRatesInitiate()
     }, [])
+
+    //---Average Rates
+    useEffect(() => {
+        setAudirrSpecial(audirrSpecial.sort((a, b) => b.amount - a.amount))
+    }, [audirrSpecial])
 
     //------------------------------
     //---IRR Rates Handler

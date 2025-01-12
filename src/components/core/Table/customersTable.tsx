@@ -25,7 +25,7 @@ export const CustomersTable: React.FC<{data: CustomerType[]}> = ({data}) => {
   //------------------------------
   const columns: TableColumnsType<CustomerType> = [
     { title: 'Code', dataIndex: 'code', key: 'code', ellipsis: true, width: "6vw" },
-    { title: 'Name', dataIndex: 'name', key: 'name', ellipsis: true, width: "20vw" },
+    { title: 'Full Name', dataIndex: 'fullName', key: 'fullName', ellipsis: true, width: "20vw" },
     {
       title: 'Country',
       dataIndex: 'country',

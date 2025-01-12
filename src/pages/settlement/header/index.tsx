@@ -12,8 +12,8 @@ export const SettlementHeader = () => {
         { label: "AUD", value: "AUD" },
         { label: "IRR", value: "IRR" },
         { label: "AED", value: "AED" },
-        { label: "CAD", value: "AUD" },
-        { label: "EUR", value: "AUD" },
+        { label: "CAD", value: "CADF" },
+        { label: "EUR", value: "EUR" },
         { label: "TRL", value: "TRL" },
         { label: "USD", value: "USD" },
         { label: "USDT", value: "USDT" }
