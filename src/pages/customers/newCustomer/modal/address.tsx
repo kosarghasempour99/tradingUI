@@ -41,13 +41,17 @@ export const AddressModal: React.FC<CustomModalProps> = ({
   onCancel
 }) => {
     const [country, setCountry] = useState("")
+    const [state, setState] = useState("")
+    const [city, setCity] = useState("")
     const [address, setAddress] = useState("")
 
     const [statesList, setStatesList] = useState([])
     const [stateOptions, setStateOptions] = useState([])
+    const [citiesList, setCitiesList] = useState([])
+    const [cityOptions, setCityOptions] = useState([])
 
     //------------------------------
-    //---Country Handler
+    //---Options Handler
     //------------------------------
     const statesInitiate = async (country: string) => {
         try {
@@ -58,20 +62,35 @@ export const AddressModal: React.FC<CustomModalProps> = ({
         }
     }
 
-    const countryHandler = (value) => {
-        setCountry(value)
-        statesInitiate(value)
+    const citiesInitiate = async (country: string, state: string) => {
+        try {
+            const cities: [] = await GetCities(country, state)
+            setCitiesList(cities)
+        } catch (error) {
+            console.error('Error fetching states:', error)
+        }
     }
 
     //---States Option
     useEffect(() => {
+        statesInitiate(country)
         const options = statesList.map((state) => ({
             value: state,
             label: state
         }))
         setStateOptions(options)
-    }, [statesList])
+    }, [country])
     
+    //---States Option
+    useEffect(() => {
+        citiesInitiate(country, state)
+        const options = citiesList.map((city) => ({
+            value: city,
+            label: city
+        }))
+        setCityOptions(options)
+    }, [state])
+
     //------------------------------
     return (
         <Modal
@@ -137,7 +156,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         }
                         options={countriesOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
-                        onChange={countryHandler}
+                        onChange={(value) => setCountry(value)}
                     />
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
@@ -153,6 +172,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         }
                         options={stateOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
+                        onChange={(e) => setState(e.target.value)}
                     />
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
@@ -166,18 +186,19 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        // options={countriesOptions}
+                        options={cityOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
+                        onChange={(e) => setCity(e.target.value)}
                     />
                 </BoxContent>
-                <BoxContent style={{width: "30vw", marginLeft: "1vw"}}>
+                <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "5vw"}}>
                         address:
                     </Title>
                     <Input
                         placeholder=""
                         value={address}
-                        style={{width: "25vw"}}
+                        style={{width: "15vw"}}
                         onChange={(e) => setAddress(e.target.value)}
                     />
                 </BoxContent>

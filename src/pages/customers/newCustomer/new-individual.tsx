@@ -83,7 +83,7 @@ export const NewIndividual = () => {
         setCountryCode(selectedCountry.code)
         setPhoneCode(selectedCountry.phoneCode)
         setPhoneType(selectedCountry.phoneType)
-        }
+    }
     
     //------------------------------
     //---Email Handler
@@ -100,7 +100,7 @@ export const NewIndividual = () => {
     }
 
       //------------------------------
-      //---Func Error Handling
+      //---Error Handling
       //------------------------------
       const errorHandler = () => {
         let error = false
