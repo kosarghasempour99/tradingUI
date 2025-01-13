@@ -89,36 +89,36 @@ export const GetStates = async (country: string): Promise<[]> => {
 }
 
 //------------------------------
-//---Cities
+//---Suburbs
 //------------------------------
-export const GetCities = async (country: string, state: string): Promise<[]> => {
-    const allCities: CountryListType[] = [
+export const GetSuburbs = async (country: string, state: string): Promise<[]> => {
+    const allSuburbs: CountryListType[] = [
         {
             country: "Australia",
             states: [
                 {
                     state: "New South Wales",
-                    cities: ["Sydney", "Newcastle", "Wollongong", "Canberra"]
+                    suburbs: ["Sydney", "Newcastle", "Wollongong", "Canberra"]
                 },
                 {
                     state: "Queensland",
-                    cities: ["Brisbane", "Gold Coast", "Townsville"]
+                    suburbs: ["Brisbane", "Gold Coast", "Townsville"]
                 },
                 {
                     state: "South Australia",
-                    cities: ["Adelaide", "Hobart", "Mount Gambier"]
+                    suburbs: ["Adelaide", "Hobart", "Mount Gambier"]
                 },
                 {
                     state: "Tasmania",
-                    cities: ["Hobart", "Launceston", "Devonport"]
+                    suburbs: ["Hobart", "Launceston", "Devonport"]
                 },
                 {
                     state: "Victoria",
-                    cities: ["Melbourne", "Bendigo", "Geelong"]
+                    suburbs: ["Melbourne", "Bendigo", "Geelong"]
                 },
                 {
                     state: "Western Australia",
-                    cities: ["Perth", "Alice Springs", "Darwin"]
+                    suburbs: ["Perth", "Alice Springs", "Darwin"]
                 }
             ]
         },
@@ -127,37 +127,37 @@ export const GetCities = async (country: string, state: string): Promise<[]> => 
             states: [
                 {
                     state: "Azarbayjan-e Gharbi",
-                    cities: ["Tehran", "Mashhad", "Isfahan"]
+                    suburbs: ["Tehran", "Mashhad", "Isfahan"]
                 },
                 {
                     state: "Azarbayjan-e Sharqi",
-                    cities: ["Tabriz", "Yazd", "Qom"]
+                    suburbs: ["Tabriz", "Yazd", "Qom"]
                 },
                 {
                     state: "Chahar Mahall va Bakhtiari",
-                    cities: ["Shiraz", "Kerman", "Zahedan"]
+                    suburbs: ["Shiraz", "Kerman", "Zahedan"]
                 },
                 {
                     state: "Khorasan-e Jonubi",
-                    cities: ["Mashhad", "Tabriz", "Yazd"]
+                    suburbs: ["Mashhad", "Tabriz", "Yazd"]
                 },
                 {
                     state: "Khorasan-e Razavi",
-                    cities: ["Tehran", "Mashhad", "Isfahan"]
+                    suburbs: ["Tehran", "Mashhad", "Isfahan"]
                 },
                 {
                     state: "Khorasan-e Shomali",
-                    cities: ["Tabriz", "Yazd", "Qom"]
+                    suburbs: ["Tabriz", "Yazd", "Qom"]
                 },
                 {
                     state: "Semnan",
-                    cities: ["Shiraz", "Kerman", "Zahedan"]
+                    suburbs: ["Shiraz", "Kerman", "Zahedan"]
                 }
             ]
         }
     ]
 
-    const filteredStates = allCities.filter((states) => states.country === country)
-    const filteredCities = filteredStates[0].states.filter((cities) => cities.state === state)
-    return filteredCities
+    const filteredStates = allSuburbs.filter((states) => states.country === country)
+    const filteredSuburbs = filteredStates[0].states.filter((suburbs) => suburbs.state === state)
+    return filteredSuburbs
 }

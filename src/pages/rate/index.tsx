@@ -3,10 +3,10 @@ import { Helmet }   from "react-helmet"
 
 import { InputNumber }    from "antd"
 
-import { FormatNumber } from "src/components/common/format"
-import { SpecialRate }  from "src/components/core/Table/specialTable"
-import { CustomBox }    from "src/components/core/CustomBox"
-import { Benefit }      from "src/definition/domain"
+import { SpecialRateTable } from "src/components/core/Table/specialTable"
+import { FormatNumber }     from "src/components/common/format"
+import { CustomBox }        from "src/components/core/CustomBox"
+import { Benefit }          from "src/definition/domain"
 
 import { RateHeader }   from "./header"
 
@@ -39,6 +39,7 @@ import {
     Title,
     Content
 } from "../style"
+import { it } from "node:test"
 
 //------------------------------
 //---Rate
@@ -73,7 +74,9 @@ export const Rate = () => {
 
     //---Special Rates
     const [audirrSpecial, setAudirrSpecial] = useState<SpecilaRateType[]>([])
+    const [audirrSpecialData, setAudirrSpecialData] = useState([])
     const [irraudSpecial, setIrraudSpecial] = useState<SpecilaRateType[]>([])
+    const [irraudSpecialData, setIrraudSpecialData] = useState([])
 
     //---Suggestion
     const [audirrSell, setAudirrSell] = useState<number>(0)
@@ -236,6 +239,30 @@ export const Rate = () => {
         setAudirrSpecial(audirrSpecial.sort((a, b) => b.amount - a.amount))
     }, [audirrSpecial])
 
+    //---Suggestions Rates
+    useEffect(() => {
+        const buy = audirrRate * (1 + Benefit.AUDIRR)
+        const sell = irraudRate * (1 - Benefit.IRRAUD)
+        setAudirrSell(Math.round(sell/1000)*1000)
+        setIrraudBuy(Math.round(buy/1000)*1000)
+    }, [audirrRate, irraudRate])
+
+    useEffect(() => {
+        const audaed = (audaedRate * (1 + audaedMargin)) * irraedRate
+        const aedaud = (audaedRate * (1 + audaedMargin)) * aedirrRate
+        setAudirrAED(Math.round(audaed/1000)*1000)
+        setIrraudAED(Math.round(aedaud/1000)*1000)
+
+    }, [audaedRate, audaedMargin, aedirrRate, irraedRate])
+
+    //---Special Rates
+    useEffect(() => {
+        const audirrSpecialRate = audirrSpecial.map(({ amount, over }) => ({ amount, over }))
+        const irraudSpecialRate = irraudSpecial.map(({ amount, over }) => ({ amount, over }))
+        setAudirrSpecialData(audirrSpecialRate)
+        setIrraudSpecialData(irraudSpecialRate)
+    }, [audirrSpecial, irraudSpecial])
+
     //------------------------------
     //---IRR Rates Handler
     //------------------------------
@@ -291,37 +318,24 @@ export const Rate = () => {
     const cadMarginHandler = () => {audMarginsHandler("AUDCAD", audcadMargin)}
     const eurMarginHandler = () => {audMarginsHandler("AUDEUR", audeurMargin)}
     const usdMarginHandler = () => {audMarginsHandler("AUDUSD", audusdMargin)}
-
     
     //------------------------------
-    //---Suggestions Rates
-    //------------------------------
-    useEffect(() => {
-        const buy = audirrRate * (1 + Benefit.AUDIRR)
-        const sell = irraudRate * (1 - Benefit.IRRAUD)
-        setAudirrSell(Math.round(sell/1000)*1000)
-        setIrraudBuy(Math.round(buy/1000)*1000)
-    }, [audirrRate, irraudRate])
-
-    useEffect(() => {
-        const audaed = (audaedRate * (1 + audaedMargin)) * irraedRate
-        const aedaud = (audaedRate * (1 + audaedMargin)) * aedirrRate
-        setAudirrAED(Math.round(audaed/1000)*1000)
-        setIrraudAED(Math.round(aedaud/1000)*1000)
-
-    }, [audaedRate, audaedMargin, aedirrRate, irraedRate])
-
-    //------------------------------
-    //---Special Rates
+    //---Special Rates Handler
     //------------------------------
     const audirrSpecialHandler = (data: {amount: number, over: number}) => {
-        const specialRate = data.map(({ amount, over }) => ({ amount, over }))
+        const specialRate = data.map((item) => ({
+            ...item,
+            rate: audirrRate + Item.over
+        }))
         setAudirrSpecial(specialRate)
         SaveSpecialRates(audirrSpecial, "AUDIRR")
     }
 
     const irraudSpecialHandler = (data: {amount: number, over: number}) => {
-        const specialRate = data.map(({ amount, over }) => ({ amount, over }))
+        const specialRate = data.map((item) => ({
+            ...item,
+            rate: irraudRate - Item.over
+        }))
         setIrraudSpecial(specialRate)
         SaveSpecialRates(irraudSpecial, "IRRAUD")
     }
@@ -356,7 +370,8 @@ export const Rate = () => {
                                             min={0}
                                             value={FormatNumber(audirrRate,0)}
                                             onChange={(value)=>{
-                                                setAudirrRate(value)
+                                                if (/^\d+$/.test(value))
+                                                    setAudirrRate(value)
                                             }}
                                             onKeyDown={audirrHandler}
                                         />
@@ -383,9 +398,9 @@ export const Rate = () => {
                                         <Header>Special Rate</Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <SpecialRate
+                                <SpecialRateTable
+                                    data={audirrSpecialData}
                                     onChange={audirrSpecialHandler}
-                                    data={audirrSpecial}
                                 />
                             </CustomBox>
                         </BoxContainer>
@@ -437,9 +452,9 @@ export const Rate = () => {
                                         <Header>Special Rate</Header>
                                     </YellowLine>
                                 </BoxHeader>
-                                <SpecialRate
+                                <SpecialRateTable
+                                    data={irraudSpecialData}
                                     onChange={irraudSpecialHandler}
-                                    data={irraudSpecial}
                                 />
                             </CustomBox>
                         </BoxContainer>

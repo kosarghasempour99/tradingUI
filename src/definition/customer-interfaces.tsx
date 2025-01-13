@@ -7,6 +7,15 @@ interface UserProps {
   }
 
 //------------------------------
+interface AddressType {
+  country: string
+  state: string
+  suburb: string
+  zipCode: number
+  address: string
+}
+
+//------------------------------
 interface CustomerType {
   user_code: string
   firstName: string
@@ -16,7 +25,7 @@ interface CustomerType {
   phone_code: string
   phone: string
   email: string
-  // address: []
+  address: AddressType[]
   kvc: string
   credit: number
   description: string

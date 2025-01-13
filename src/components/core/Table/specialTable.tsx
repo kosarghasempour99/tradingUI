@@ -12,9 +12,9 @@ interface BaseRateProc {
 }
 
 //------------------------------
-//---Special Rate
+//---Special Rate Table
 //------------------------------
-export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data}) => { 
+export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => { 
   const [dataSource, setDataSource] = useState<SpecialRateType[]>(
     data.length === 0 ? [
       {
@@ -30,8 +30,7 @@ export const SpecialRate: React.FC <BaseRateProc> = ({onChange, data}) => {
     const newRow = {
       key: Date.now(),
       amount: 2000,
-      over: 0,
-      rate: 0
+      over: 0
     }
     setDataSource([...dataSource, newRow])
   }

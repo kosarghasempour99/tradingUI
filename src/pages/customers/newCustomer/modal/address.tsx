@@ -7,7 +7,7 @@ import {
     Select
 } from 'antd'
 
-import { GetStates, GetCities } from "src/services/commonServices"
+import { GetStates, GetSuburbs } from "src/services/commonServices"
 
 import { CustomBox }    from "src/components/core/CustomBox"
 import { CountryType }  from "src/definition/customer-interfaces"
@@ -42,54 +42,94 @@ export const AddressModal: React.FC<CustomModalProps> = ({
 }) => {
     const [country, setCountry] = useState("")
     const [state, setState] = useState("")
-    const [city, setCity] = useState("")
+    const [suburb, setSuburb] = useState("")
+    const [zipCode, setZipCode] = useState("")
     const [address, setAddress] = useState("")
 
-    const [statesList, setStatesList] = useState([])
-    const [stateOptions, setStateOptions] = useState([])
-    const [citiesList, setCitiesList] = useState([])
-    const [cityOptions, setCityOptions] = useState([])
-
+    const [statesList, setStatesList] = useState<string[]>([])
+    const [stateOptions, setStateOptions] = useState<{ label: string; value: string }[]>([])
+    const [suburbsList, setSuburbsList] = useState<string[]>([])
+    const [suburbOptions, setSuburbOptions] = useState<{ label: string; value: string }[]>([])
+  
+    //------------------------------
+    //---Initiate
+    //------------------------------
+    useEffect(() => {
+        if (isVisible) {
+          setCountry("")
+          setState("")
+          setSuburb("")
+          setZipCode("")
+          setAddress("")
+          setStateOptions([])
+          setSuburbOptions([])
+        }
+      }, [isVisible])
+    
     //------------------------------
     //---Options Handler
     //------------------------------
+    //---States Option
     const statesInitiate = async (country: string) => {
         try {
-            const states: [] = await GetStates(country)
+            const states: string[] = await GetStates(country)
             setStatesList(states)
+            console.log(states, statesList)
         } catch (error) {
             console.error('Error fetching states:', error)
         }
     }
 
-    const citiesInitiate = async (country: string, state: string) => {
-        try {
-            const cities: [] = await GetCities(country, state)
-            setCitiesList(cities)
-        } catch (error) {
-            console.error('Error fetching states:', error)
-        }
-    }
-
-    //---States Option
     useEffect(() => {
-        statesInitiate(country)
+        if (country) {
+            statesInitiate(country)
+        }
+    }, [country])
+    
+    useEffect(() => {
         const options = statesList.map((state) => ({
             value: state,
             label: state
         }))
-        setStateOptions(options)
-    }, [country])
-    
-    //---States Option
+        setStateOptions(options)    
+    }, [statesList])
+
+    //---Suburbs Option
+    const suburbsInitiate = async (country: string, state: string) => {
+        try {
+            const suburbs: string[] = await GetSuburbs(country, state)
+            setSuburbsList(suburbs)
+        } catch (error) {
+            console.error('Error fetching states:', error)
+        }
+    }
+
     useEffect(() => {
-        citiesInitiate(country, state)
-        const options = citiesList.map((city) => ({
-            value: city,
-            label: city
-        }))
-        setCityOptions(options)
+        if (state) {
+            suburbsInitiate(country, state)
+        }
     }, [state])
+    
+    useEffect(() => {
+        const options = suburbsList.map((suburb) => ({
+            value: suburb,
+            label: suburb
+        }))
+        setSuburbOptions(options)
+    }, [suburbsList])
+
+    //------------------------------
+    //---Save Handler
+    //------------------------------
+    const saveHandler = () => {
+        onSave({
+          country,
+          state,
+          suburb,
+          zipCode,
+          address
+        })
+    }
 
     //------------------------------
     return (
@@ -103,7 +143,6 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                 </BoxHeader>
             }
             open={isVisible}
-            onOk={onSave}
             footer={[
                 <Button
                     variant="solid"
@@ -135,7 +174,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         marginTop: "2vw",
                         cursor: "pointer",
                     }}
-                    onClick={onSave}
+                    onClick={saveHandler}
                 >
                     Save
                 </Button>
@@ -172,12 +211,12 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         }
                         options={stateOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
-                        onChange={(e) => setState(e.target.value)}
+                        onChange={(value) => setState(value)}
                     />
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "4vw"}}>
-                        City:
+                        Suburb:
                     </Title>
                     <Select
                         showSearch
@@ -186,9 +225,24 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        options={cityOptions}
+                        options={suburbOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
-                        onChange={(e) => setCity(e.target.value)}
+                        onChange={(value) => setSuburb(value)}
+                    />
+                </BoxContent>
+                <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                    <Title style={{width: "5vw"}}>
+                        Zip Code:
+                    </Title>
+                    <Input
+                        placeholder=""
+                        value={zipCode}
+                        style={{width: "5vw"}}
+                        onChange={(e) => {
+                            const value = e.target.value
+                            if (/^\d+$/.test(value) )
+                                setZipCode(value)
+                        }}
                     />
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>

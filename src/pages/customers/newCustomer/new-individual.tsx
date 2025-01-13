@@ -12,7 +12,8 @@ import {
 import { CustomBox }    from "src/components/core/CustomBox"
 import { GetCountries }  from "src/services/commonServices"
 
-import { CountryType }  from "src/definition/customer-interfaces"
+import { CountryType }  from "src/definition/interfaces"
+import { AddressType }  from "src/definition/customer-interfaces"
 import { Color }        from "src/definition/color"
 
 import { AddressModal } from "./modal/address"
@@ -37,7 +38,6 @@ export const NewIndividual = () => {
 
     //---Personal Information
     const [country, setCountry] = useState<string>("")
-    const [countryCode, setCountryCode] = useState<string>("")
     const [phoneCOde, setPhoneCode] = useState<string>("")
     const [phoneType, setPhoneType] = useState<string>("")
     const [phone, setPhone] = useState<string>("")
@@ -47,6 +47,9 @@ export const NewIndividual = () => {
     const [dateOfBirth, setDateOfBirth] = useState<string>()
     const [email, setEmail] = useState<string>("")
 
+    const [addresses, setAddresses] = useState<AddressType[]>([])
+    const [addressesText, setAddressesText] = useState<string[]>([])
+    
     //------------------------------
     //---Initiate
     //------------------------------
@@ -80,7 +83,6 @@ export const NewIndividual = () => {
     const countryHandler = (value) => {
         const selectedCountry = countries.find((country) => country.name === value)
         setCountry(selectedCountry.name)
-        setCountryCode(selectedCountry.code)
         setPhoneCode(selectedCountry.phoneCode)
         setPhoneType(selectedCountry.phoneType)
     }
@@ -104,7 +106,7 @@ export const NewIndividual = () => {
       //------------------------------
       const errorHandler = () => {
         let error = false
-        console.log(country, phoneCOde, phone, firstName, middleName, lastName, dateOfBirth, email)
+        navigate("/new-order")
       }
     
       const cancelHandler = () => {
@@ -117,10 +119,30 @@ export const NewIndividual = () => {
     const [addressModalShow, setAddressModalShow] = useState(false)
     const showAddressModal = () => setAddressModalShow(true)
 
-    const SaveAddress = () => {
-        console.log("Save Address")
+    const SaveAddress = (selectedAddress:{
+        country: string
+        state: string
+        suburb: string
+        zipCode: string
+        address: string
+    }) => {
+        const newAddress: AddressType = {
+            country: selectedAddress.country,
+            state: selectedAddress.state,
+            suburb: selectedAddress.suburb,
+            zipCode: selectedAddress.zipCode,
+            address: selectedAddress.address
+        }
+        setAddresses([...addresses, newAddress])        
         setAddressModalShow(false)
     }
+
+    useEffect(() => {
+        const addressesString = addresses.map((item) => (
+            `${item.address}, ${item.suburb}, ${item.state}, ${item.zipCode}, ${item.country}`
+        ))
+        setAddressesText(addressesString.join(","))
+    }, [addresses])
 
     //------------------------------
     return (
@@ -273,11 +295,13 @@ export const NewIndividual = () => {
                                         +
                                     </Content>
                                 </BoxContent>
-                                <BoxContent style={{marginLeft: "1vw"}}>
-                                    <Content style={{color: Color.RED, fontSize: "16px"}}>
-                                        -
-                                    </Content>
-                                </BoxContent>
+                                {/* <BoxContent style={{marginLeft: "1vw"}}>
+                                    {addressesText.map((address, index) => (
+                                        <Content key={index} style={{color: Color.RED, fontSize: "16px"}}>
+                                            - {address.text}
+                                        </Content>
+                                    ))}
+                                </BoxContent> */}
                             </CustomBox>
                         </BoxContainer>
                     </RowContainer>
