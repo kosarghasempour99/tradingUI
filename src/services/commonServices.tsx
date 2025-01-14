@@ -14,8 +14,8 @@ export const GetCountries = async (): Promise<CountryType[]> => {
 //------------------------------
 //---States
 //------------------------------
-export const GetStates = async (country: string): Promise<string[]> => {
-    const countryData = allStates.find((item) => item.country === country)
+export const GetStates = async (code: string): Promise<string[]> => {
+    const countryData = allStates.find((item) => item.countryCode === code)
     if (!countryData) return []
 
     return countryData.states
@@ -24,8 +24,8 @@ export const GetStates = async (country: string): Promise<string[]> => {
 //------------------------------
 //---Suburbs
 //------------------------------
-export const GetSuburbs = async (country: string, state: string): Promise<string[]> => {
-    const countryData = allSuburbs.find((item) => item.country === country)
+export const GetSuburbs = async (code: string, state: string): Promise<string[]> => {
+    const countryData = allSuburbs.find((item) => item.countryCode === code)
     if (!countryData) return []
 
     const stateData = countryData.states.find((item) => item.state === state)
@@ -89,19 +89,19 @@ const countries: CountryType[] = [
 //------------------------------
 const allStates: StateListType[] = [
     {
-        country: "Australia",
+        countryCode: "AU",
         states: ["New South Wales", "Queensland", "South Australia", "Tasmania", "Victoria", "Western Australia"]
     },
     {
-        country: "Canada",
+        countryCode: "CA",
         states: ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Quebec", "Saskatchewan"]
     },
     {
-        country: "Emirates",
+        countryCode: "AE",
         states: ["Abu Dhabi", "Dubai", "Sharjah", "Umm Al-Quwain"]
     },
     {
-        country: "Iran",
+        countryCode: "IR",
         states: ["Azarbayjan-e Gharbi", "Azarbayjan-e Sharqi", "Chahar Mahall va Bakhtiari", "Khorasan-e Jonubi", "Khorasan-e Razavi", "Khorasan-e Shomali", "Semnan"]
     }
 ]
@@ -109,7 +109,7 @@ const allStates: StateListType[] = [
 //------------------------------
 const allSuburbs: CountryListType[] = [
     {
-        country: "Australia",
+        countryCode: "AU",
         states: [
             {
                 state: "New South Wales",
@@ -138,7 +138,7 @@ const allSuburbs: CountryListType[] = [
         ]
     },
     {
-        country: "Iran",
+        countryCode: "IR",
         states: [
             {
                 state: "Azarbayjan-e Gharbi",

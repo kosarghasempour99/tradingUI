@@ -40,7 +40,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
   onSave,
   onCancel
 }) => {
-    const [country, setCountry] = useState("")
+    const [countryCode, setCountryCode] = useState("")
     const [state, setState] = useState("")
     const [suburb, setSuburb] = useState("")
     const [zipCode, setZipCode] = useState("")
@@ -53,9 +53,9 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     //---Options Handler
     //------------------------------
     //---States Option
-    const statesInitiate = async (country: string) => {
+    const statesInitiate = async (Code: string) => {
         try {
-            const states: string[] = await GetStates(country)
+            const states: string[] = await GetStates(Code)
             const options = states.map((state) => ({
                 value: state,
                 label: state
@@ -67,10 +67,10 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     }
 
     useEffect(() => {
-        if (country) {
-            statesInitiate(country)
+        if (countryCode) {
+            statesInitiate(countryCode)
         }
-    }, [country])
+    }, [countryCode])
     
     useEffect(() => {
         if (stateOptions.length > 0) {
@@ -80,9 +80,9 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     }, [stateOptions])
 
     //---Suburbs Option
-    const suburbsInitiate = async (country: string, state: string) => {
+    const suburbsInitiate = async (code: string, state: string) => {
         try {
-            const suburbs: string[] = await GetSuburbs(country, state)
+            const suburbs: string[] = await GetSuburbs(code, state)
             const options = suburbs.map((suburb) => ({
                 value: suburb,
                 label: suburb
@@ -95,7 +95,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
 
     useEffect(() => {
         if (state) {
-            suburbsInitiate(country, state)
+            suburbsInitiate(countryCode, state)
         }
     }, [state])
     
@@ -111,7 +111,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     //------------------------------
     const saveHandler = () => {
         onSave({
-          country,
+          countryCode,
           state,
           suburb,
           zipCode,
@@ -176,7 +176,6 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
-                        placeholder="Countries..."
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
@@ -185,7 +184,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         options={countriesOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => {
-                            setCountry(value)
+                            setCountryCode(value)
                             setState("")
                             setSuburb("''")
                           }}
@@ -197,34 +196,43 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
-                        placeholder="States..."
                         value={state}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
+                        disabled={!stateOptions || stateOptions.length === 0}
                         options={stateOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => setState(value)}
                     />
                 </BoxContent>
-                <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
-                    <Title style={{width: "4vw"}}>
-                        Suburb:
-                    </Title>
+                    <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                        {countryCode === "IR" || 
+                        countryCode === "AE" ||
+                        countryCode === "TR"?
+                        (
+                            <Title style={{width: "4vw"}}>
+                                City:
+                            </Title>
+                        ): (                            
+                            <Title style={{width: "4vw"}}>
+                                Suburb:
+                            </Title>
+                        )}
                     <Select
                         showSearch
-                        placeholder="Cities..."
                         value={suburb}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
+                        disabled={!suburbOptions || suburbOptions.length === 0}
                         options={suburbOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => setSuburb(value)}
                     />
-                </BoxContent>
+                    </BoxContent>                
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "5vw"}}>
                         Zip Code:

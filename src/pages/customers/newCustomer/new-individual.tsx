@@ -2,6 +2,8 @@ import { useEffect, useState }      from "react"
 import { useNavigate}   from "react-router-dom"
 import moment          from "moment"
 
+import { Edit }  from "iconsax-react"
+
 import {
     DatePicker,
     Input,
@@ -35,11 +37,11 @@ export const NewIndividual = () => {
     //---General Information
     const [countries, setCountries] = useState<CountryType[]>([])
     const [countriesOptions, setCountriesOptions] = useState([])
+    const [phoneCode, setPhoneCode] = useState<string>("")
+    const [phoneType, setPhoneType] = useState<string>("")
 
     //---Personal Information
-    const [country, setCountry] = useState<string>("")
-    const [phoneCOde, setPhoneCode] = useState<string>("")
-    const [phoneType, setPhoneType] = useState<string>("")
+    const [country, setCountry] = useState<string>("")    
     const [phone, setPhone] = useState<string>("")
     const [firstName, setFirstName] = useState<string>("")
     const [middleName, setMiddleName] = useState<string>("")
@@ -47,7 +49,7 @@ export const NewIndividual = () => {
     const [dateOfBirth, setDateOfBirth] = useState<string>()
     const [email, setEmail] = useState<string>("")
 
-    const [addresses, setAddresses] = useState<AddressType[]>([])
+    const [address, setAddress] = useState<AddressType>()
     
     //------------------------------
     //---Initiate
@@ -70,7 +72,7 @@ export const NewIndividual = () => {
     //---Countries Option
     useEffect(() => {
         const options = countries.map((country) => ({
-            value: country.name,
+            value: country.code,
             label: country.name
         }))
         setCountriesOptions(options)
@@ -119,20 +121,21 @@ export const NewIndividual = () => {
     const showAddressModal = () => setAddressModalShow(true)
 
     const SaveAddress = (selectedAddress:{
-        country: string
+        countryCode: string
         state: string
         suburb: string
         zipCode: string
         address: string
     }) => {
+        const country = countries.find((item) => item.code === selectedAddress.countryCode)
         const newAddress: AddressType = {
-            country: selectedAddress.country,
+            country: country.name,
             state: selectedAddress.state,
             suburb: selectedAddress.suburb,
             zipCode: selectedAddress.zipCode,
             address: selectedAddress.address
         }
-        setAddresses((prevAddresses) => [...prevAddresses, newAddress])
+        setAddress(newAddress)
         setAddressModalShow(false)
     }
 
@@ -204,7 +207,7 @@ export const NewIndividual = () => {
                                         Mobile:
                                     </Title>
                                     <Input
-                                        addonBefore={phoneCOde}
+                                        addonBefore={phoneCode}
                                         placeholder={phoneType}
                                         value={phone}
                                         maxLength={10}
@@ -276,28 +279,52 @@ export const NewIndividual = () => {
                         </BoxContainer>
                         <BoxContainer style={{width: "55vw", marginRight: "1vw", flexDirection: "column", alignItems: "flex-start"}}>
                             <CustomBox>
-                                <BoxContent
-                                    style={{marginLeft: "1vw", marginTop: "1vw", cursor: "pointer", justifyContent: "flex-start"}}
-                                    onClick={showAddressModal}
-                                >
-                                    <Title style={{width: "6vw", color: Color.BLUE_DARK}}>
+                                <BoxContent style={{marginLeft: "1vw", marginTop: "1vw", justifyContent: "flex-start"}}>
+                                    <Title style={{width: "6vw"}}>
                                         Address
                                     </Title>
-                                    <Content style={{color: Color.RED, fontSize: "20px"}}>
+                                    <Content style={{color: Color.RED, fontSize: "20px", cursor: "pointer"}}
+                                        onClick={showAddressModal}
+                                    >
                                         +
                                     </Content>
                                 </BoxContent>
-                                <BoxContent style={{marginLeft: "1vw"}}>
-                                    {addresses.length > 0 ? (
-                                        addresses.map((address, index) => (
-                                        <Content key={index} style={{marginBottom: "8px"}}>
-                                            - {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
+                                <BoxContent style={{ marginLeft: "1vw", display: "flex", alignItems: "center", gap: "1vw" }}>
+                                    {address ? (
+                                        <>
+                                        <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
+                                            onClick={showAddressModal}
+                                        />
+                                        <Content>
+                                            {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
                                         </Content>
-                                        ))
+                                        </>
                                     ) : (
-                                        <Title>
-                                            No addresses available...
-                                        </Title>
+                                        <Title>No addresses available...</Title>
+                                    )}
+                                </BoxContent>
+                                <BoxContent style={{marginLeft: "1vw", marginTop: "3vw", justifyContent: "flex-start"}}>
+                                    <Title style={{width: "8vw"}}>
+                                        Extra Address
+                                    </Title>
+                                    <Content style={{color: Color.RED, fontSize: "20px", cursor: "pointer"}}
+                                        onClick={showAddressModal}
+                                    >
+                                        +
+                                    </Content>
+                                </BoxContent>
+                                <BoxContent style={{ marginLeft: "1vw", display: "flex", alignItems: "center", gap: "1vw" }}>
+                                    {address ? (
+                                        <>
+                                        <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
+                                            onClick={showAddressModal}
+                                        />
+                                        <Content>
+                                            {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
+                                        </Content>
+                                        </>
+                                    ) : (
+                                        <Title>No addresses available...</Title>
                                     )}
                                 </BoxContent>
                             </CustomBox>
