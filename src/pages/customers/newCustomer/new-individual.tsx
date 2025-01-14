@@ -48,7 +48,6 @@ export const NewIndividual = () => {
     const [email, setEmail] = useState<string>("")
 
     const [addresses, setAddresses] = useState<AddressType[]>([])
-    const [addressesText, setAddressesText] = useState<string[]>([])
     
     //------------------------------
     //---Initiate
@@ -133,16 +132,9 @@ export const NewIndividual = () => {
             zipCode: selectedAddress.zipCode,
             address: selectedAddress.address
         }
-        setAddresses([...addresses, newAddress])        
+        setAddresses((prevAddresses) => [...prevAddresses, newAddress])
         setAddressModalShow(false)
     }
-
-    useEffect(() => {
-        const addressesString = addresses.map((item) => (
-            `${item.address}, ${item.suburb}, ${item.state}, ${item.zipCode}, ${item.country}`
-        ))
-        setAddressesText(addressesString.join(","))
-    }, [addresses])
 
     //------------------------------
     return (
@@ -285,7 +277,7 @@ export const NewIndividual = () => {
                         <BoxContainer style={{width: "55vw", marginRight: "1vw", flexDirection: "column", alignItems: "flex-start"}}>
                             <CustomBox>
                                 <BoxContent
-                                    style={{marginLeft: "1vw", marginTop: "1vw", cursor: "pointer"}}
+                                    style={{marginLeft: "1vw", marginTop: "1vw", cursor: "pointer", justifyContent: "flex-start"}}
                                     onClick={showAddressModal}
                                 >
                                     <Title style={{width: "6vw", color: Color.BLUE_DARK}}>
@@ -295,13 +287,19 @@ export const NewIndividual = () => {
                                         +
                                     </Content>
                                 </BoxContent>
-                                {/* <BoxContent style={{marginLeft: "1vw"}}>
-                                    {addressesText.map((address, index) => (
-                                        <Content key={index} style={{color: Color.RED, fontSize: "16px"}}>
-                                            - {address.text}
+                                <BoxContent style={{marginLeft: "1vw"}}>
+                                    {addresses.length > 0 ? (
+                                        addresses.map((address, index) => (
+                                        <Content key={index} style={{marginBottom: "8px"}}>
+                                            - {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
                                         </Content>
-                                    ))}
-                                </BoxContent> */}
+                                        ))
+                                    ) : (
+                                        <Title>
+                                            No addresses available...
+                                        </Title>
+                                    )}
+                                </BoxContent>
                             </CustomBox>
                         </BoxContainer>
                     </RowContainer>
@@ -317,6 +315,9 @@ export const NewIndividual = () => {
                                     </Content>
                                 </BoxContent>
                                 <BoxContent style={{marginLeft: "1vw"}}>
+                                    <Title>
+                                        No documents uploaded...
+                                    </Title>
                                 </BoxContent>
                             </CustomBox>
                         </BoxContainer>

@@ -1,4 +1,4 @@
-import {
+ import {
     CountryType,
     StateListType,
     CountryListType
@@ -8,7 +8,34 @@ import {
 //---Countries
 //------------------------------
 export const GetCountries = async (): Promise<CountryType[]> => {
-  const countries: CountryType[] = [
+    return countries
+}
+
+//------------------------------
+//---States
+//------------------------------
+export const GetStates = async (country: string): Promise<string[]> => {
+    const countryData = allStates.find((item) => item.country === country)
+    if (!countryData) return []
+
+    return countryData.states
+}
+
+//------------------------------
+//---Suburbs
+//------------------------------
+export const GetSuburbs = async (country: string, state: string): Promise<string[]> => {
+    const countryData = allSuburbs.find((item) => item.country === country)
+    if (!countryData) return []
+
+    const stateData = countryData.states.find((item) => item.state === state)
+    if (!stateData) return []
+
+    return stateData.suburbs
+}
+
+//------------------------------
+const countries: CountryType[] = [
     {
         name: "Australia",
         code: "AU",
@@ -57,107 +84,91 @@ export const GetCountries = async (): Promise<CountryType[]> => {
         phoneCode: "+1",
         phoneType: "5xx xxx xxxx",
     }
-  ]
-  return countries
-}
+]
 
 //------------------------------
-//---States
-//------------------------------
-export const GetStates = async (country: string): Promise<[]> => {
-    const allStates: StateListType[] = [
-        {
-            country: "Australia",
-            states: ["New South Wales", "Queensland", "South Australia", "Tasmania", "Victoria", "Western Australia"]
-        },
-        {
-            country: "Canada",
-            states: ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Quebec", "Saskatchewan"]
-        },
-        {
-            country: "Emirates",
-            states: ["Abu Dhabi", "Dubai", "Sharjah", "Umm Al-Quwain"]
-        },
-        {
-            country: "Iran",
-            states: ["Azarbayjan-e Gharbi", "Azarbayjan-e Sharqi", "Chahar Mahall va Bakhtiari", "Khorasan-e Jonubi", "Khorasan-e Razavi", "Khorasan-e Shomali", "Semnan"]
-        }
-    ]
-
-    const filteredStates = allStates.filter((states) => states.country === country)
-    return filteredStates
-}
+const allStates: StateListType[] = [
+    {
+        country: "Australia",
+        states: ["New South Wales", "Queensland", "South Australia", "Tasmania", "Victoria", "Western Australia"]
+    },
+    {
+        country: "Canada",
+        states: ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Quebec", "Saskatchewan"]
+    },
+    {
+        country: "Emirates",
+        states: ["Abu Dhabi", "Dubai", "Sharjah", "Umm Al-Quwain"]
+    },
+    {
+        country: "Iran",
+        states: ["Azarbayjan-e Gharbi", "Azarbayjan-e Sharqi", "Chahar Mahall va Bakhtiari", "Khorasan-e Jonubi", "Khorasan-e Razavi", "Khorasan-e Shomali", "Semnan"]
+    }
+]
 
 //------------------------------
-//---Suburbs
-//------------------------------
-export const GetSuburbs = async (country: string, state: string): Promise<[]> => {
-    const allSuburbs: CountryListType[] = [
-        {
-            country: "Australia",
-            states: [
-                {
-                    state: "New South Wales",
-                    suburbs: ["Sydney", "Newcastle", "Wollongong", "Canberra"]
-                },
-                {
-                    state: "Queensland",
-                    suburbs: ["Brisbane", "Gold Coast", "Townsville"]
-                },
-                {
-                    state: "South Australia",
-                    suburbs: ["Adelaide", "Hobart", "Mount Gambier"]
-                },
-                {
-                    state: "Tasmania",
-                    suburbs: ["Hobart", "Launceston", "Devonport"]
-                },
-                {
-                    state: "Victoria",
-                    suburbs: ["Melbourne", "Bendigo", "Geelong"]
-                },
-                {
-                    state: "Western Australia",
-                    suburbs: ["Perth", "Alice Springs", "Darwin"]
-                }
-            ]
-        },
-        {
-            country: "Iran",
-            states: [
-                {
-                    state: "Azarbayjan-e Gharbi",
-                    suburbs: ["Tehran", "Mashhad", "Isfahan"]
-                },
-                {
-                    state: "Azarbayjan-e Sharqi",
-                    suburbs: ["Tabriz", "Yazd", "Qom"]
-                },
-                {
-                    state: "Chahar Mahall va Bakhtiari",
-                    suburbs: ["Shiraz", "Kerman", "Zahedan"]
-                },
-                {
-                    state: "Khorasan-e Jonubi",
-                    suburbs: ["Mashhad", "Tabriz", "Yazd"]
-                },
-                {
-                    state: "Khorasan-e Razavi",
-                    suburbs: ["Tehran", "Mashhad", "Isfahan"]
-                },
-                {
-                    state: "Khorasan-e Shomali",
-                    suburbs: ["Tabriz", "Yazd", "Qom"]
-                },
-                {
-                    state: "Semnan",
-                    suburbs: ["Shiraz", "Kerman", "Zahedan"]
-                }
-            ]
-        }
-    ]
+const allSuburbs: CountryListType[] = [
+    {
+        country: "Australia",
+        states: [
+            {
+                state: "New South Wales",
+                suburbs: ["Sydney", "Newcastle", "Wollongong", "Canberra"]
+            },
+            {
+                state: "Queensland",
+                suburbs: ["Brisbane", "Gold Coast", "Townsville"]
+            },
+            {
+                state: "South Australia",
+                suburbs: ["Adelaide", "Hobart", "Mount Gambier"]
+            },
+            {
+                state: "Tasmania",
+                suburbs: ["Hobart", "Launceston", "Devonport"]
+            },
+            {
+                state: "Victoria",
+                suburbs: ["Melbourne", "Bendigo", "Geelong"]
+            },
+            {
+                state: "Western Australia",
+                suburbs: ["Perth", "Alice Springs", "Darwin"]
+            }
+        ]
+    },
+    {
+        country: "Iran",
+        states: [
+            {
+                state: "Azarbayjan-e Gharbi",
+                suburbs: ["Tehran", "Mashhad", "Isfahan"]
+            },
+            {
+                state: "Azarbayjan-e Sharqi",
+                suburbs: ["Tabriz", "Yazd", "Qom"]
+            },
+            {
+                state: "Chahar Mahall va Bakhtiari",
+                suburbs: ["Shiraz", "Kerman", "Zahedan"]
+            },
+            {
+                state: "Khorasan-e Jonubi",
+                suburbs: ["Mashhad", "Tabriz", "Yazd"]
+            },
+            {
+                state: "Khorasan-e Razavi",
+                suburbs: ["Tehran", "Mashhad", "Isfahan"]
+            },
+            {
+                state: "Khorasan-e Shomali",
+                suburbs: ["Tabriz", "Yazd", "Qom"]
+            },
+            {
+                state: "Semnan",
+                suburbs: ["Shiraz", "Kerman", "Zahedan"]
+            }
+        ]
+    }
+]
 
-    const filteredStates = allSuburbs.filter((states) => states.country === country)
-    const filteredSuburbs = filteredStates[0].states.filter((suburbs) => suburbs.state === state)
-    return filteredSuburbs
-}

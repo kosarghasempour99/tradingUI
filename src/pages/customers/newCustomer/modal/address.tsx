@@ -46,26 +46,9 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     const [zipCode, setZipCode] = useState("")
     const [address, setAddress] = useState("")
 
-    const [statesList, setStatesList] = useState<string[]>([])
     const [stateOptions, setStateOptions] = useState<{ label: string; value: string }[]>([])
-    const [suburbsList, setSuburbsList] = useState<string[]>([])
     const [suburbOptions, setSuburbOptions] = useState<{ label: string; value: string }[]>([])
   
-    //------------------------------
-    //---Initiate
-    //------------------------------
-    useEffect(() => {
-        if (isVisible) {
-          setCountry("")
-          setState("")
-          setSuburb("")
-          setZipCode("")
-          setAddress("")
-          setStateOptions([])
-          setSuburbOptions([])
-        }
-      }, [isVisible])
-    
     //------------------------------
     //---Options Handler
     //------------------------------
@@ -73,8 +56,11 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     const statesInitiate = async (country: string) => {
         try {
             const states: string[] = await GetStates(country)
-            setStatesList(states)
-            console.log(states, statesList)
+            const options = states.map((state) => ({
+                value: state,
+                label: state
+            }))
+            setStateOptions(options)
         } catch (error) {
             console.error('Error fetching states:', error)
         }
@@ -87,18 +73,21 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     }, [country])
     
     useEffect(() => {
-        const options = statesList.map((state) => ({
-            value: state,
-            label: state
-        }))
-        setStateOptions(options)    
-    }, [statesList])
+        if (stateOptions.length > 0) {
+            const firstState = stateOptions[0].value
+            setState(firstState)
+        }
+    }, [stateOptions])
 
     //---Suburbs Option
     const suburbsInitiate = async (country: string, state: string) => {
         try {
             const suburbs: string[] = await GetSuburbs(country, state)
-            setSuburbsList(suburbs)
+            const options = suburbs.map((suburb) => ({
+                value: suburb,
+                label: suburb
+            }))
+            setSuburbOptions(options)
         } catch (error) {
             console.error('Error fetching states:', error)
         }
@@ -111,12 +100,11 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     }, [state])
     
     useEffect(() => {
-        const options = suburbsList.map((suburb) => ({
-            value: suburb,
-            label: suburb
-        }))
-        setSuburbOptions(options)
-    }, [suburbsList])
+        if (suburbOptions.length > 0) {
+            const firstSuburb = suburbOptions[0].value
+            setSuburb(firstSuburb)
+        }
+    }, [suburbOptions])
 
     //------------------------------
     //---Save Handler
@@ -193,9 +181,14 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
+                        disabled={!countriesOptions || countriesOptions.length === 0}
                         options={countriesOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
-                        onChange={(value) => setCountry(value)}
+                        onChange={(value) => {
+                            setCountry(value)
+                            setState("")
+                            setSuburb("''")
+                          }}
                     />
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
@@ -205,6 +198,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     <Select
                         showSearch
                         placeholder="States..."
+                        value={state}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
@@ -221,6 +215,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     <Select
                         showSearch
                         placeholder="Cities..."
+                        value={suburb}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
