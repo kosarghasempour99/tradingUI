@@ -14,11 +14,12 @@ import {
 import { CustomBox }    from "src/components/core/CustomBox"
 import { GetCountries }  from "src/services/commonServices"
 
+import { AddressType, ExtraAddressType }  from "src/definition/customer-interfaces"
 import { CountryType }  from "src/definition/interfaces"
-import { AddressType }  from "src/definition/customer-interfaces"
 import { Color }        from "src/definition/color"
 
-import { AddressModal } from "./modal/address"
+import { ExtraAddressModal }    from "./modal/extra-address"
+import { AddressModal }         from "./modal/address"
 
 import {
     RowContainer,
@@ -37,11 +38,14 @@ export const NewIndividual = () => {
     //---General Information
     const [countries, setCountries] = useState<CountryType[]>([])
     const [countriesOptions, setCountriesOptions] = useState([])
-    const [phoneCode, setPhoneCode] = useState<string>("")
-    const [phoneType, setPhoneType] = useState<string>("")
+    const [countrySelectedOption, setCountrySelectedOption] = useState([])
+    const [countriesInfo, setCountriesInfo] = useState([])
 
     //---Personal Information
-    const [country, setCountry] = useState<string>("")    
+    const [country, setCountry] = useState<string>("")
+    const [countryCode, setCountryCode] = useState<string>("")
+    const [phoneCode, setPhoneCode] = useState<string>("")
+    const [phoneType, setPhoneType] = useState<string>("")
     const [phone, setPhone] = useState<string>("")
     const [firstName, setFirstName] = useState<string>("")
     const [middleName, setMiddleName] = useState<string>("")
@@ -50,6 +54,7 @@ export const NewIndividual = () => {
     const [email, setEmail] = useState<string>("")
 
     const [address, setAddress] = useState<AddressType>()
+    const [extraAddress, setExtraAddress] = useState<ExtraAddressType>([])
     
     //------------------------------
     //---Initiate
@@ -76,17 +81,29 @@ export const NewIndividual = () => {
             label: country.name
         }))
         setCountriesOptions(options)
+
+        const info = countries.map((country) => ({
+            code: country.code,
+            name: country.name,
+            phoneCode: country.phoneCode,
+            phoneType: country.phoneType
+        }))
+        setCountriesInfo(info)
     }, [countries])
 
-    //------------------------------
-    //---Country Handler
-    //------------------------------
-    const countryHandler = (value) => {
-        const selectedCountry = countries.find((country) => country.name === value)
-        setCountry(selectedCountry.name)
-        setPhoneCode(selectedCountry.phoneCode)
-        setPhoneType(selectedCountry.phoneType)
-    }
+    //---Phone Info
+    useEffect(() => {
+        const selectedCountry: CountryType = countries.find((item) => item.code === countryCode)
+        setCountry(selectedCountry?.name)
+        setPhoneCode(selectedCountry?.phoneCode)
+        setPhoneType(selectedCountry?.phoneType)
+
+        const selectedOption = {
+            value: selectedCountry?.code,
+            label: selectedCountry?.name
+        }
+        setCountrySelectedOption([selectedOption])
+    },[countryCode])
     
     //------------------------------
     //---Email Handler
@@ -118,7 +135,10 @@ export const NewIndividual = () => {
     //---Show Modals
     //------------------------------
     const [addressModalShow, setAddressModalShow] = useState(false)
+    const [extraAddressModalShow, setExtraAddressModalShow] = useState(false)
+
     const showAddressModal = () => setAddressModalShow(true)
+    const showExtraAddressModal = () => setExtraAddressModalShow(true)
 
     const SaveAddress = (selectedAddress:{
         countryCode: string
@@ -137,6 +157,29 @@ export const NewIndividual = () => {
         }
         setAddress(newAddress)
         setAddressModalShow(false)
+    }
+
+    const SaveExtraAddress = (selectedAddress:{
+        countryCode: string
+        phoneCode: string
+        phone: string
+        state: string
+        suburb: string
+        zipCode: string
+        address: string
+    }) => {
+        const country = countries.find((item) => item.code === selectedAddress.countryCode)
+        const newAddress: ExtraAddressType = {
+            country: country.name,
+            phoneCode: country.phoneCode,
+            phone: selectedAddress.phone,
+            state: selectedAddress.state,
+            suburb: selectedAddress.suburb,
+            zipCode: selectedAddress.zipCode,
+            address: selectedAddress.address
+        }
+        setExtraAddress((previewAddress) => [...previewAddress, newAddress])
+        setExtraAddressModalShow(false)
     }
 
     //------------------------------
@@ -199,8 +242,9 @@ export const NewIndividual = () => {
                                         }
                                         options={countriesOptions}
                                         style={{ width: "15vw" }}
-                                        onChange={countryHandler}
+                                        onChange={(value) => setCountryCode(value)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.RED, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -218,6 +262,7 @@ export const NewIndividual = () => {
                                                 setPhone(input)
                                         }}}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.RED, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -229,6 +274,7 @@ export const NewIndividual = () => {
                                         style={{width: "15vw"}}
                                         onChange={(e) => setFirstName(e.target.value)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.RED, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -240,6 +286,7 @@ export const NewIndividual = () => {
                                         style={{width: "15vw"}}
                                         onChange={(e) => setMiddleName(e.target.value)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.WHITE, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -251,6 +298,7 @@ export const NewIndividual = () => {
                                         style={{width: "15vw"}}
                                         onChange={(e) => setLastName(e.target.value)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.RED, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -263,6 +311,7 @@ export const NewIndividual = () => {
                                         style={{width: "15vw"}}
                                         onChange={(date, dateString) => setDateOfBirth(dateString)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.RED, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw", marginBottom: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
@@ -274,6 +323,7 @@ export const NewIndividual = () => {
                                         style={{width: "15vw"}}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
+                                    <Title style={{marginLeft: "1vw", color: Color.WHITE, fontSize: "18px"}}>*</Title>
                                 </BoxContent>
                             </CustomBox>
                         </BoxContainer>
@@ -308,24 +358,29 @@ export const NewIndividual = () => {
                                         Extra Address
                                     </Title>
                                     <Content style={{color: Color.RED, fontSize: "20px", cursor: "pointer"}}
-                                        onClick={showAddressModal}
+                                        onClick={showExtraAddressModal}
                                     >
                                         +
                                     </Content>
                                 </BoxContent>
                                 <BoxContent style={{ marginLeft: "1vw", display: "flex", alignItems: "center", gap: "1vw" }}>
-                                    {address ? (
-                                        <>
-                                        <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
-                                            onClick={showAddressModal}
-                                        />
-                                        <Content>
-                                            {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
-                                        </Content>
-                                        </>
-                                    ) : (
-                                        <Title>No addresses available...</Title>
-                                    )}
+                                    <CustomBox>
+                                        {extraAddress.length > 0 ? (
+                                            extraAddress.map((address, index) => (
+                                                <BoxContent key={index}>    
+                                                    <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
+                                                        onClick={showExtraAddressModal}
+                                                    />
+                                                    <Content style={{marginLeft: "1vw"}}>
+                                                        {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country},
+                                                        ({address.phoneCode}) {address.phone}
+                                                    </Content>
+                                                </BoxContent>
+                                        ))
+                                        ) : (
+                                            <Title>No extra addresses available...</Title>
+                                        )}
+                                    </CustomBox>
                                 </BoxContent>
                             </CustomBox>
                         </BoxContainer>
@@ -354,9 +409,16 @@ export const NewIndividual = () => {
 
             <AddressModal
                 isVisible={addressModalShow}
-                countriesOptions={countriesOptions}
+                countriesOptions={countrySelectedOption}
                 onSave={SaveAddress}
                 onCancel={() => setAddressModalShow(false)}
+            />
+
+            <ExtraAddressModal
+                isVisible={extraAddressModalShow}
+                countriesInfo={countriesInfo}
+                onSave={SaveExtraAddress}
+                onCancel={() => setExtraAddressModalShow(false)}
             />
         </div>
     )

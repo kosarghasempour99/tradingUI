@@ -4,8 +4,7 @@ interface CountryType {
   currency: string
   currencyCode: string
   phoneCode: string
-  mobileType: string
-  mobileLength: number
+  phoneType: string
 }
 
 //------------------------------

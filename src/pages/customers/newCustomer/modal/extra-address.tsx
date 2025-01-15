@@ -10,7 +10,6 @@ import {
 import { GetStates, GetSuburbs } from "src/services/commonServices"
 
 import { CustomBox }    from "src/components/core/CustomBox"
-import { CountryType }  from "src/definition/customer-interfaces"
 import { Color }        from "src/definition/color"
 
 import {
@@ -18,32 +17,33 @@ import {
     BoxHeader,
     YellowLine,
     Header,
-    Title,
-    Content
+    Title
 } from "../../../style"
 
 //------------------------------
 interface CustomModalProps {
     isVisible: boolean
     centered?: boolean
-    countriesOptions: CountryType[]
-    countryName: string
-    country_code: string
+    countriesInfo: []
     onSave: () => void
     onCancel: () => void
 }
 
 //------------------------------
-//---Address Modal
+//---Extra Address Modal
 //------------------------------
-export const AddressModal: React.FC<CustomModalProps> = ({
+export const ExtraAddressModal: React.FC<CustomModalProps> = ({
   isVisible,
   centered = false,
-  countriesOptions = [],
+  countriesInfo = [],
   onSave,
   onCancel
 }) => {
     const [countryCode, setCountryCode] = useState("")
+    const [phoneCode, setPhoneCode] = useState<string>("")
+    const [phoneType, setPhoneType] = useState<string>("")
+
+    const [phone, setPhone] = useState<string>("")
     const [state, setState] = useState("")
     const [suburb, setSuburb] = useState("")
     const [zipCode, setZipCode] = useState("")
@@ -70,9 +70,11 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     }
 
     useEffect(() => {
-        if (countryCode) {
-            statesInitiate(countryCode)
-        }
+        statesInitiate(countryCode)
+
+        const selectedCountry = countriesInfo.find((item) => item.code === countryCode)
+        setPhoneCode(selectedCountry?.phoneCode)
+        setPhoneType(selectedCountry?.phoneType)
     }, [countryCode])
     
     useEffect(() => {
@@ -115,6 +117,8 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     const saveHandler = () => {
         onSave({
           countryCode,
+          phoneCode,
+          phone,
           state,
           suburb,
           zipCode,
@@ -129,7 +133,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
             title={
                 <BoxHeader style={{width: "25vw", marginLeft: "1vw"}}>
                     <YellowLine>
-                        <Header>Add Address</Header>
+                        <Header>Add Extra Address</Header>
                     </YellowLine>
                 </BoxHeader>
             }
@@ -183,8 +187,11 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        disabled={!countriesOptions || countriesOptions.length === 0}
-                        options={countriesOptions}
+                        disabled={!countriesInfo || countriesInfo.length === 0}
+                        options={countriesInfo.map((country) => ({
+                            value: country.code,
+                            label: country.name
+                        }))}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => {
                             setCountryCode(value)
@@ -193,7 +200,24 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                           }}
                     />
                 </BoxContent>
-                <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                    <Title style={{width: "5vw"}}>
+                        Mobile:
+                    </Title>
+                    <Input
+                        addonBefore={phoneCode}
+                        placeholder={phoneType}
+                        value={phone}
+                        maxLength={10}
+                        style={{width: "15vw"}}
+                        onChange={(e) => {
+                        const input = e.target.value
+                            if (/^\d*$/.test(input)) {
+                            setPhone(input)
+                        }}}
+                    />
+                </BoxContent>
+                <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "4vw"}}>
                         State:
                     </Title>

@@ -1,7 +1,7 @@
 import { useEffect, useState }      from "react"
 import { Helmet }   from "react-helmet"
 
-import { Input, InputNumber }    from "antd"
+import { InputNumber }    from "antd"
 
 import { SpecialRateTable } from "src/components/core/Table/specialTable"
 import { FormatNumber }     from "src/components/common/format"
@@ -39,7 +39,6 @@ import {
     Title,
     Content
 } from "../style"
-import { it } from "node:test"
 
 //------------------------------
 //---Rate
