@@ -15,15 +15,15 @@ interface BaseRateProc {
 //---Special Rate Table
 //------------------------------
 export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => { 
-  const [dataSource, setDataSource] = useState<SpecialRateType[]>(
-    data.length === 0 ? [
-      {
-        key: "defaultRow",
-        amount: 2000,
-        over: 0
-      }  
-    ] : data
-  )
+ const [dataSource, setDataSource] = useState<SpecialRateType[]>([]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setDataSource(data);
+    } else {
+      setDataSource([{ key: "defaultRow", amount: 2000, over: 0 }]);
+    }
+  }, [data]);
 
   //------------------------------
   const handleAdd = () => {
