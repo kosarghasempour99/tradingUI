@@ -55,6 +55,19 @@ export const ExtraAddressModal: React.FC<CustomModalProps> = ({
     //------------------------------
     //---Options Handler
     //------------------------------
+    useEffect(() => {
+        setCountryCode("")
+        setPhoneCode("")
+        setPhoneType("")
+        setPhone("")
+        setStateOptions([])
+        setState("")
+        setSuburbOptions([])
+        setSuburb("")
+        setZipCode("")
+        setAddress("")
+    },[isVisible])
+
     //---States Option
     const statesInitiate = async (Code: string) => {
         try {
@@ -183,6 +196,7 @@ export const ExtraAddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
+                        value={countryCode}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
@@ -202,7 +216,7 @@ export const ExtraAddressModal: React.FC<CustomModalProps> = ({
                 </BoxContent>
                 <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "5vw"}}>
-                        Mobile:
+                        Phone:
                     </Title>
                     <Input
                         addonBefore={phoneCode}

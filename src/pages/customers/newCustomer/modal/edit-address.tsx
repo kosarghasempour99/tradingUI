@@ -26,19 +26,31 @@ interface CustomModalProps {
     isVisible: boolean
     centered?: boolean
     countriesOptions: CountryType[]
+    country_code: string
+    current_state: string
+    current_suburb: string
+    current_zipCode: string
+    current_address: string
     onSave: () => void
     onCancel: () => void
+    onDel: () => void
 }
 
 //------------------------------
-//---Address Modal
+//---Edit Address Modal
 //------------------------------
-export const AddressModal: React.FC<CustomModalProps> = ({
-  isVisible,
-  centered = false,
-  countriesOptions = [],
-  onSave,
-  onCancel
+export const EditAddressModal: React.FC<CustomModalProps> = ({
+    isVisible,
+    centered = false,
+    countriesOptions = [],
+    country_code,
+    current_state,
+    current_suburb,
+    current_zipCode,
+    current_address,
+    onSave,
+    onCancel,
+    onDel
 }) => {
     const [countryCode, setCountryCode] = useState("")
     const [state, setState] = useState("")
@@ -53,13 +65,11 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     //---Options Handler
     //------------------------------
     useEffect(() => {
-        setCountryCode("")
-        setStateOptions([])
-        setState("")
-        setSuburbOptions([])
-        setSuburb("")
-        setZipCode("")
-        setAddress("")
+        setCountryCode(country_code)
+        setState(current_state)
+        setSuburb(current_suburb)
+        setZipCode(current_zipCode)
+        setAddress(current_address)
     },[isVisible])
 
     //---States Option
@@ -167,6 +177,23 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                         fontSize: "12px",
                         fontWeight: "700",
                         color: Color.WHITE,
+                        backgroundColor: Color.RED,
+                        marginTop: "2vw",
+                        cursor: "pointer",
+                    }}
+                    onClick={onDel}
+                >
+                    Delete
+                </Button>,
+                <Button
+                    variant="solid"
+                    size="large"
+                    style={{
+                        width: "8vw",
+                        fontFamily: "Montserrat",
+                        fontSize: "12px",
+                        fontWeight: "700",
+                        color: Color.WHITE,
                         backgroundColor: Color.BLUE_DARK,
                         marginTop: "2vw",
                         cursor: "pointer",
@@ -185,6 +212,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
+                        value={country_code}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())

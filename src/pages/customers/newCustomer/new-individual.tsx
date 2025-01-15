@@ -19,6 +19,7 @@ import { CountryType }  from "src/definition/interfaces"
 import { Color }        from "src/definition/color"
 
 import { ExtraAddressModal }    from "./modal/extra-address"
+import { EditAddressModal }     from "./modal/edit-address"
 import { AddressModal }         from "./modal/address"
 
 import {
@@ -50,7 +51,7 @@ export const NewIndividual = () => {
     const [firstName, setFirstName] = useState<string>("")
     const [middleName, setMiddleName] = useState<string>("")
     const [lastName, setLastName] = useState<string>("")
-    const [dateOfBirth, setDateOfBirth] = useState<string>()
+    const [dateOfBirth, setDateOfBirth] = useState<string>("")
     const [email, setEmail] = useState<string>("")
 
     const [address, setAddress] = useState<AddressType>()
@@ -81,14 +82,6 @@ export const NewIndividual = () => {
             label: country.name
         }))
         setCountriesOptions(options)
-
-        const info = countries.map((country) => ({
-            code: country.code,
-            name: country.name,
-            phoneCode: country.phoneCode,
-            phoneType: country.phoneType
-        }))
-        setCountriesInfo(info)
     }, [countries])
 
     //---Phone Info
@@ -103,6 +96,15 @@ export const NewIndividual = () => {
             label: selectedCountry?.name
         }
         setCountrySelectedOption([selectedOption])
+
+        const nonSelectedCountries: CountryType = countries.filter((item) => !countryCode.includes(item.code))
+        const info = nonSelectedCountries.map((item) => ({
+            code: item.code,
+            name: item.name,
+            phoneCode: item.phoneCode,
+            phoneType: item.phoneType
+        }))
+        setCountriesInfo(info)
     },[countryCode])
     
     //------------------------------
@@ -135,19 +137,23 @@ export const NewIndividual = () => {
     //---Show Modals
     //------------------------------
     const [addressModalShow, setAddressModalShow] = useState(false)
+    const [editAddressModalShow, setEditAddressModalShow] = useState(false)
     const [extraAddressModalShow, setExtraAddressModalShow] = useState(false)
+    const [editExtraAddressModalShow, setEditExtraAddressModalShow] = useState(false)
 
     const showAddressModal = () => setAddressModalShow(true)
+    const showEditAddressModal = () => setEditAddressModalShow(true)
     const showExtraAddressModal = () => setExtraAddressModalShow(true)
+    const showEditExtraAddressModal = () => setEditExtraAddressModalShow(true)
 
+    //------------------------------
     const SaveAddress = (selectedAddress:{
-        countryCode: string
         state: string
         suburb: string
         zipCode: string
         address: string
     }) => {
-        const country = countries.find((item) => item.code === selectedAddress.countryCode)
+        const country = countries.find((item) => item.code === countryCode)
         const newAddress: AddressType = {
             country: country.name,
             state: selectedAddress.state,
@@ -157,8 +163,24 @@ export const NewIndividual = () => {
         }
         setAddress(newAddress)
         setAddressModalShow(false)
+        // console.log(address)
     }
 
+    const EditAddress = (selectedAddress:{
+        state: string
+        suburb: string
+        zipCode: string
+        address: string
+    }) => {
+        setEditAddressModalShow(false)
+    }
+
+    const DelAddress = () => {
+        setAddress([])
+        setEditAddressModalShow(false)
+    }
+
+    //------------------------------
     const SaveExtraAddress = (selectedAddress:{
         countryCode: string
         phoneCode: string
@@ -180,6 +202,18 @@ export const NewIndividual = () => {
         }
         setExtraAddress((previewAddress) => [...previewAddress, newAddress])
         setExtraAddressModalShow(false)
+    }
+
+    const EditExtraAddress = (selectedAddress:{
+        countryCode: string
+        phoneCode: string
+        phone: string
+        state: string
+        suburb: string
+        zipCode: string
+        address: string
+    }) => {
+        setEditExtraAddressModalShow(false)
     }
 
     //------------------------------
@@ -248,7 +282,7 @@ export const NewIndividual = () => {
                                 </BoxContent>
                                 <BoxContent style={{width: "22vw", marginLeft: "1vw", marginTop: "1vw"}}>
                                     <Title style={{width: "6vw", textAlign: "right", marginRight: "1vw"}}>
-                                        Mobile:
+                                        Phone:
                                     </Title>
                                     <Input
                                         addonBefore={phoneCode}
@@ -343,7 +377,7 @@ export const NewIndividual = () => {
                                     {address ? (
                                         <>
                                         <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
-                                            onClick={showAddressModal}
+                                            onClick={showEditAddressModal}
                                         />
                                         <Content>
                                             {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
@@ -369,7 +403,7 @@ export const NewIndividual = () => {
                                             extraAddress.map((address, index) => (
                                                 <BoxContent key={index}>    
                                                     <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
-                                                        onClick={showExtraAddressModal}
+                                                        onClick={showEditExtraAddressModal}
                                                     />
                                                     <Content style={{marginLeft: "1vw"}}>
                                                         {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country},
@@ -407,19 +441,36 @@ export const NewIndividual = () => {
                 </CustomBox>
             </RowContainer>
 
-            <AddressModal
-                isVisible={addressModalShow}
-                countriesOptions={countrySelectedOption}
-                onSave={SaveAddress}
-                onCancel={() => setAddressModalShow(false)}
-            />
+            {countryCode && !address ? (
+                <AddressModal
+                    isVisible={addressModalShow}
+                    countriesOptions={countrySelectedOption}
+                    onSave={SaveAddress}
+                    onCancel={() => setAddressModalShow(false)}
+                />            
+            ) : (null)}
 
-            <ExtraAddressModal
-                isVisible={extraAddressModalShow}
-                countriesInfo={countriesInfo}
-                onSave={SaveExtraAddress}
-                onCancel={() => setExtraAddressModalShow(false)}
-            />
+            <EditAddressModal
+                isVisible={editAddressModalShow}
+                countriesOptions={countrySelectedOption}
+                country_code={countryCode}
+                current_state={address.state}
+                current_suburb={address.suburb}
+                current_zipCode={address.zipCode}
+                current_address={address.address}
+                onSave={EditAddress}
+                onCancel={() => setEditAddressModalShow(false)}
+                onDel={DelAddress}
+            />            
+
+            {countryCode ? (
+                <ExtraAddressModal
+                    isVisible={extraAddressModalShow}
+                    countriesInfo={countriesInfo}
+                    onSave={SaveExtraAddress}
+                    onCancel={() => setExtraAddressModalShow(false)}
+                />
+            ) : (null)}
         </div>
     )
 }
