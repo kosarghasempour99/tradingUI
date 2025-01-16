@@ -18,8 +18,3 @@ export const UserRole = {
    SUPPORT: "Support"
 }
 
-//------------------------------------------------------------Customers
-export const KVC = {
-   OK: "OK",
-   FAILED: "Failed"
-}

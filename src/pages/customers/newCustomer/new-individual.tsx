@@ -19,6 +19,7 @@ import { CountryType }  from "src/definition/interfaces"
 import { Color }        from "src/definition/color"
 
 import { EditExtraAddressModal }    from "./modal/edit-extra-address"
+import { IndvDocumentModal }         from "./modal/indv-document"
 import { ExtraAddressModal }        from "./modal/extra-address"
 import { EditAddressModal }         from "./modal/edit-address"
 import { AddressModal }             from "./modal/address"
@@ -57,7 +58,6 @@ export const NewIndividual = () => {
     const [email, setEmail] = useState<string>("")
 
     const [address, setAddress] = useState<AddressType>()
-    const [addressToEdit, setAddressToEdit] = useState<AddressType>()
     const [extraAddress, setExtraAddress] = useState<ExtraAddressType>([])
     const [extraAddressToEdit, setExtraAddressToEdit] = useState<ExtraAddressType>()
     
@@ -138,20 +138,48 @@ export const NewIndividual = () => {
     }
 
     //------------------------------
-    //---Show Modals
+    //---Show Address Modal
     //------------------------------
     const [addressModalShow, setAddressModalShow] = useState(false)
     const [editAddressModalShow, setEditAddressModalShow] = useState(false)
+
+    const showAddressModal = () => setAddressModalShow(true)
+    const showEditAddressModal = () => setEditAddressModalShow(true)
+
+    //------------------------------
+    const SaveAddress = (selectedAddress:{
+        state: string
+        suburb: string
+        zipCode: string
+        address: string
+    }) => {
+        const country = countries.find((item) => item.code === countryCode)
+        const newAddress: AddressType = {
+            countryCode: countryCode,
+            country: country.name,
+            state: selectedAddress.state,
+            suburb: selectedAddress.suburb,
+            zipCode: selectedAddress.zipCode,
+            address: selectedAddress.address
+        }
+        setAddress(newAddress)
+        setAddressModalShow(false)
+        setEditAddressModalShow(false)
+    }
+
+    //------------------------------
+    const DelAddress = () => {
+        setAddress()
+        setEditAddressModalShow(false)
+    }
+
+    //------------------------------
+    //---Show Extra Address Modal
+    //------------------------------
     const [extraAddressModalShow, setExtraAddressModalShow] = useState(false)
     const [editExtraAddressModalShow, setEditExtraAddressModalShow] = useState(false)
 
-    const showAddressModal = () => setAddressModalShow(true)
     const showExtraAddressModal = () => setExtraAddressModalShow(true)
-
-    const showEditAddressModal = () => {
-        setEditAddressModalShow(true)
-    }
-
     const showEditExtraAddressModal = (index: number) => {
         const selectedAddress: ExtraAddressType = extraAddress[index]
         setExtraAddressToEdit(selectedAddress)
@@ -166,31 +194,6 @@ export const NewIndividual = () => {
         setCountriesEditInfo(countriesInfo)
         setCountriesEditInfo((previouCountries) => [...previouCountries, info])
         setEditExtraAddressModalShow(true)
-    }
-
-    //------------------------------
-    const SaveAddress = (selectedAddress:{
-        state: string
-        suburb: string
-        zipCode: string
-        address: string
-    }) => {
-        const country = countries.find((item) => item.code === countryCode)
-        const newAddress: AddressType = {
-            country: country.name,
-            state: selectedAddress.state,
-            suburb: selectedAddress.suburb,
-            zipCode: selectedAddress.zipCode,
-            address: selectedAddress.address
-        }
-        setAddress(newAddress)
-        setAddressModalShow(false)
-        setEditAddressModalShow(false)
-    }
-
-    const DelAddress = () => {
-        setAddress()
-        setEditAddressModalShow(false)
     }
 
     //------------------------------
@@ -227,6 +230,7 @@ export const NewIndividual = () => {
         setCountriesInfo(info)
     }
 
+    //------------------------------
     const EditExtraAddress = (selectedAddress:{
         countryCode: string
         phoneCode: string
@@ -247,15 +251,43 @@ export const NewIndividual = () => {
             zipCode: selectedAddress.zipCode,
             address: selectedAddress.address
         }
-        setExtraAddress((previewAddress) => [...previewAddress, newAddress])
-        // setExtraAddress((previewAddress) => 
-        //     prevAddresses.map((item) => item.countryCode === newAddress.countryCode ? newAddress : item
-        // ))
+        setExtraAddress((prevExtraAddress) => 
+            prevExtraAddress.map((item) =>
+                item.countryCode === newAddress.countryCode ? newAddress : item
+        ))
         setEditExtraAddressModalShow(false)
     }
 
+    //------------------------------
     const DelExtraAddress = () => {
+        setExtraAddress((prevExtraAddress) =>
+            prevExtraAddress.filter((item) => item.countryCode !== extraAddressToEdit.countryCode
+        ))
+
+        const selectedCountry = countries.find((item) => item.code === extraAddressToEdit.countryCode)
+        const info = {
+            code: selectedCountry.code,
+            name: selectedCountry.name,
+            phoneCode: selectedCountry.phoneCode,
+            phoneType: selectedCountry.phoneType
+        }
+        setCountriesInfo((previouCountries) => [...previouCountries, info])
+
         setEditExtraAddressModalShow(false)
+    }
+
+    //------------------------------
+    //---Show Documents Modal
+    //------------------------------
+    const [documentModalShow, setDocumentModalShow] = useState(false)
+    // const [editDocumentModalShow, setEditDocumentModalShow] = useState(false)
+    const showDocumentModal = () => setDocumentModalShow(true)
+    // const showEditDocumentModal = (index: number) => {
+    // }
+
+    //------------------------------
+    const SaveDocument = () => {
+        setDocumentModalShow(false)
     }
 
     //------------------------------
@@ -468,11 +500,13 @@ export const NewIndividual = () => {
                                     <Title style={{width: "6vw", color: Color.BLUE_DARK}}>
                                         Document
                                     </Title>
-                                    <Content style={{color: Color.RED, fontSize: "20px"}}>
+                                    <Content style={{color: Color.RED, fontSize: "20px", cursor: "pointer"}}
+                                        onClick={showDocumentModal}
+                                    >
                                         +
                                     </Content>
                                 </BoxContent>
-                                <BoxContent style={{marginLeft: "1vw"}}>
+                                <BoxContent style={{marginLeft: "1vw", marginBottom: "1vw"}}>
                                     <Title>
                                         No documents uploaded...
                                     </Title>
@@ -496,11 +530,7 @@ export const NewIndividual = () => {
                 <EditAddressModal
                     isVisible={editAddressModalShow}
                     countriesOptions={countrySelectedOption}
-                    country_code={countryCode}
-                    current_state={address.state}
-                    current_suburb={address.suburb}
-                    current_zipCode={address.zipCode}
-                    current_address={address.address}
+                    currentAddres={address}
                     onSave={SaveAddress}
                     onCancel={() => setEditAddressModalShow(false)}
                     onDel={DelAddress}
@@ -525,6 +555,12 @@ export const NewIndividual = () => {
                     onCancel={() => setExtraAddressModalShow(false)}
                 />
             ) : (null)}
+
+            <IndvDocumentModal
+                isVisible={documentModalShow}
+                onSave={SaveDocument}
+                onCancel={() => setDocumentModalShow(false)}
+            />
         </div>
     )
 }

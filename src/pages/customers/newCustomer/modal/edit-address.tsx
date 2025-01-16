@@ -26,11 +26,7 @@ interface CustomModalProps {
     isVisible: boolean
     centered?: boolean
     countriesOptions: CountryType[]
-    country_code: string
-    current_state: string
-    current_suburb: string
-    current_zipCode: string
-    current_address: string
+    currentAddres: AddressType
     onSave: () => void
     onCancel: () => void
     onDel: () => void
@@ -43,11 +39,7 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
     isVisible,
     centered = false,
     countriesOptions = [],
-    country_code,
-    current_state,
-    current_suburb,
-    current_zipCode,
-    current_address,
+    currentAddres,
     onSave,
     onCancel,
     onDel
@@ -65,11 +57,11 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
     //---Options Handler
     //------------------------------
     useEffect(() => {
-        setCountryCode(country_code)
-        setState(current_state)
-        setSuburb(current_suburb)
-        setZipCode(current_zipCode)
-        setAddress(current_address)
+        setCountryCode(currentAddres.countryCode)
+        setState(currentAddres.state)
+        setSuburb(currentAddres.suburb)
+        setZipCode(currentAddres.zipCode)
+        setAddress(currentAddres.address)
     },[isVisible])
 
     //---States Option
@@ -213,7 +205,7 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
-                        value={country_code}
+                        value={countryCode}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())

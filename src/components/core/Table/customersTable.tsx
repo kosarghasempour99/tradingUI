@@ -5,7 +5,7 @@ import { Table }            from 'antd'
 
 import { FormatNumber } from 'src/components/common/format'
 import { CustomerType } from 'src/definition/interfaces'
-import { KVC }          from 'src/definition/domain'
+import { KVC }          from 'src/definition/const'
 
 type OnChange = NonNullable<TableProps<CustomerType>['onChange']>
 type Filters = Parameters<OnChange>[1]

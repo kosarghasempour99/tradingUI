@@ -8,6 +8,7 @@ interface UserProps {
 
 //------------------------------
 interface AddressType {
+  countryCode: string
   country: string
   state: string
   suburb: string
