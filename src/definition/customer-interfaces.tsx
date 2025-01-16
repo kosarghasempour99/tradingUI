@@ -17,6 +17,7 @@ interface AddressType {
 
 //------------------------------
 interface ExtraAddressType {
+  countryCode: string
   country: string
   phoneCode: string
   phone: string

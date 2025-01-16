@@ -53,7 +53,7 @@ const countries: CountryType[] = [
         phoneType: "xxx xxx xxxx",
     },
     {
-        name: "Enited Arab Emirates",
+        name: "United Arab Emirates",
         code: "AE",
         currency: "UAE Dirham",
         currencyCode: "AED",

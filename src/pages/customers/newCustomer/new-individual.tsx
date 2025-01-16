@@ -18,9 +18,10 @@ import { AddressType, ExtraAddressType }  from "src/definition/customer-interfac
 import { CountryType }  from "src/definition/interfaces"
 import { Color }        from "src/definition/color"
 
-import { ExtraAddressModal }    from "./modal/extra-address"
-import { EditAddressModal }     from "./modal/edit-address"
-import { AddressModal }         from "./modal/address"
+import { EditExtraAddressModal }    from "./modal/edit-extra-address"
+import { ExtraAddressModal }        from "./modal/extra-address"
+import { EditAddressModal }         from "./modal/edit-address"
+import { AddressModal }             from "./modal/address"
 
 import {
     RowContainer,
@@ -41,6 +42,7 @@ export const NewIndividual = () => {
     const [countriesOptions, setCountriesOptions] = useState([])
     const [countrySelectedOption, setCountrySelectedOption] = useState([])
     const [countriesInfo, setCountriesInfo] = useState([])
+    const [countriesEditInfo, setCountriesEditInfo] = useState([])
 
     //---Personal Information
     const [country, setCountry] = useState<string>("")
@@ -55,7 +57,9 @@ export const NewIndividual = () => {
     const [email, setEmail] = useState<string>("")
 
     const [address, setAddress] = useState<AddressType>()
+    const [addressToEdit, setAddressToEdit] = useState<AddressType>()
     const [extraAddress, setExtraAddress] = useState<ExtraAddressType>([])
+    const [extraAddressToEdit, setExtraAddressToEdit] = useState<ExtraAddressType>()
     
     //------------------------------
     //---Initiate
@@ -142,9 +146,27 @@ export const NewIndividual = () => {
     const [editExtraAddressModalShow, setEditExtraAddressModalShow] = useState(false)
 
     const showAddressModal = () => setAddressModalShow(true)
-    const showEditAddressModal = () => setEditAddressModalShow(true)
     const showExtraAddressModal = () => setExtraAddressModalShow(true)
-    const showEditExtraAddressModal = () => setEditExtraAddressModalShow(true)
+
+    const showEditAddressModal = () => {
+        setEditAddressModalShow(true)
+    }
+
+    const showEditExtraAddressModal = (index: number) => {
+        const selectedAddress: ExtraAddressType = extraAddress[index]
+        setExtraAddressToEdit(selectedAddress)
+
+        const selectedCountry = countries.find((item) => item.code === selectedAddress.countryCode)
+        const info = {
+            code: selectedCountry.code,
+            name: selectedCountry.name,
+            phoneCode: selectedCountry.phoneCode,
+            phoneType: selectedCountry.phoneType
+        }
+        setCountriesEditInfo(countriesInfo)
+        setCountriesEditInfo((previouCountries) => [...previouCountries, info])
+        setEditExtraAddressModalShow(true)
+    }
 
     //------------------------------
     const SaveAddress = (selectedAddress:{
@@ -163,20 +185,11 @@ export const NewIndividual = () => {
         }
         setAddress(newAddress)
         setAddressModalShow(false)
-        // console.log(address)
-    }
-
-    const EditAddress = (selectedAddress:{
-        state: string
-        suburb: string
-        zipCode: string
-        address: string
-    }) => {
         setEditAddressModalShow(false)
     }
 
     const DelAddress = () => {
-        setAddress([])
+        setAddress()
         setEditAddressModalShow(false)
     }
 
@@ -190,10 +203,11 @@ export const NewIndividual = () => {
         zipCode: string
         address: string
     }) => {
-        const country = countries.find((item) => item.code === selectedAddress.countryCode)
+        const selectedCountry = countries.find((item) => item.code === selectedAddress.countryCode)
         const newAddress: ExtraAddressType = {
-            country: country.name,
-            phoneCode: country.phoneCode,
+            countryCode: selectedAddress.countryCode,
+            country: selectedCountry.name,
+            phoneCode: selectedCountry.phoneCode,
             phone: selectedAddress.phone,
             state: selectedAddress.state,
             suburb: selectedAddress.suburb,
@@ -202,6 +216,15 @@ export const NewIndividual = () => {
         }
         setExtraAddress((previewAddress) => [...previewAddress, newAddress])
         setExtraAddressModalShow(false)
+
+        const nonSelectedCountries: CountryType = countriesInfo.filter((item) => !selectedAddress.countryCode.includes(item.code))
+        const info = nonSelectedCountries.map((item) => ({
+            code: item.code,
+            name: item.name,
+            phoneCode: item.phoneCode,
+            phoneType: item.phoneType
+        }))
+        setCountriesInfo(info)
     }
 
     const EditExtraAddress = (selectedAddress:{
@@ -213,6 +236,25 @@ export const NewIndividual = () => {
         zipCode: string
         address: string
     }) => {
+        const selectedCountry = countries.find((item) => item.code === selectedAddress.countryCode)
+        const newAddress: ExtraAddressType = {
+            countryCode: selectedAddress.countryCode,
+            country: selectedCountry.name,
+            phoneCode: selectedCountry.phoneCode,
+            phone: selectedAddress.phone,
+            state: selectedAddress.state,
+            suburb: selectedAddress.suburb,
+            zipCode: selectedAddress.zipCode,
+            address: selectedAddress.address
+        }
+        setExtraAddress((previewAddress) => [...previewAddress, newAddress])
+        // setExtraAddress((previewAddress) => 
+        //     prevAddresses.map((item) => item.countryCode === newAddress.countryCode ? newAddress : item
+        // ))
+        setEditExtraAddressModalShow(false)
+    }
+
+    const DelExtraAddress = () => {
         setEditExtraAddressModalShow(false)
     }
 
@@ -373,13 +415,13 @@ export const NewIndividual = () => {
                                         +
                                     </Content>
                                 </BoxContent>
-                                <BoxContent style={{ marginLeft: "1vw", display: "flex", alignItems: "center", gap: "1vw" }}>
+                                <BoxContent style={{ marginLeft: "1vw", justifyContent: "flex-start"}}>
                                     {address ? (
                                         <>
                                         <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
                                             onClick={showEditAddressModal}
                                         />
-                                        <Content>
+                                        <Content style={{marginLeft: "1vw"}}>
                                             {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country}
                                         </Content>
                                         </>
@@ -397,13 +439,13 @@ export const NewIndividual = () => {
                                         +
                                     </Content>
                                 </BoxContent>
-                                <BoxContent style={{ marginLeft: "1vw", display: "flex", alignItems: "center", gap: "1vw" }}>
+                                <BoxContent style={{ marginLeft: "1vw", display: "flex", justifyContent: "flex-start"}}>
                                     <CustomBox>
                                         {extraAddress.length > 0 ? (
                                             extraAddress.map((address, index) => (
                                                 <BoxContent key={index}>    
                                                     <Edit size="20" color={Color.RED} title="Edit Address" style={{ cursor: "pointer" }} 
-                                                        onClick={showEditExtraAddressModal}
+                                                        onClick={() => showEditExtraAddressModal(index)}
                                                     />
                                                     <Content style={{marginLeft: "1vw"}}>
                                                         {address.address}, {address.suburb}, {address.state} {address.zipCode}, {address.country},
@@ -450,18 +492,30 @@ export const NewIndividual = () => {
                 />            
             ) : (null)}
 
-            <EditAddressModal
-                isVisible={editAddressModalShow}
-                countriesOptions={countrySelectedOption}
-                country_code={countryCode}
-                current_state={address.state}
-                current_suburb={address.suburb}
-                current_zipCode={address.zipCode}
-                current_address={address.address}
-                onSave={EditAddress}
-                onCancel={() => setEditAddressModalShow(false)}
-                onDel={DelAddress}
-            />            
+            {address ? (
+                <EditAddressModal
+                    isVisible={editAddressModalShow}
+                    countriesOptions={countrySelectedOption}
+                    country_code={countryCode}
+                    current_state={address.state}
+                    current_suburb={address.suburb}
+                    current_zipCode={address.zipCode}
+                    current_address={address.address}
+                    onSave={SaveAddress}
+                    onCancel={() => setEditAddressModalShow(false)}
+                    onDel={DelAddress}
+                />            
+            ) : (null)}
+            {extraAddressToEdit ? (
+                <EditExtraAddressModal
+                    isVisible={editExtraAddressModalShow}
+                    countriesInfo={countriesEditInfo}
+                    currentAddress={extraAddressToEdit}
+                    onSave={EditExtraAddress}
+                    onCancel={() => setEditExtraAddressModalShow(false)}
+                    onDel={DelExtraAddress}
+                />
+        ) : (null)}
 
             {countryCode ? (
                 <ExtraAddressModal

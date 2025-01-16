@@ -10,8 +10,9 @@ import {
 import { GetStates, GetSuburbs } from "src/services/commonServices"
 
 import { CustomBox }    from "src/components/core/CustomBox"
-import { CountryType }  from "src/definition/customer-interfaces"
 import { Color }        from "src/definition/color"
+
+import { ExtraAddressType }  from "src/definition/customer-interfaces"
 
 import {
     BoxContent,
@@ -25,34 +26,30 @@ import {
 interface CustomModalProps {
     isVisible: boolean
     centered?: boolean
-    countriesOptions: CountryType[]
-    country_code: string
-    current_state: string
-    current_suburb: string
-    current_zipCode: string
-    current_address: string
+    countriesInfo: []
+    currentAddress: ExtraAddressType
     onSave: () => void
     onCancel: () => void
     onDel: () => void
 }
 
 //------------------------------
-//---Edit Address Modal
+//---Edit Extra Address Modal
 //------------------------------
-export const EditAddressModal: React.FC<CustomModalProps> = ({
+export const EditExtraAddressModal: React.FC<CustomModalProps> = ({
     isVisible,
     centered = false,
-    countriesOptions = [],
-    country_code,
-    current_state,
-    current_suburb,
-    current_zipCode,
-    current_address,
+    countriesInfo = [],
+    currentAddress,
     onSave,
     onCancel,
     onDel
 }) => {
     const [countryCode, setCountryCode] = useState("")
+    const [phoneCode, setPhoneCode] = useState<string>("")
+    const [phoneType, setPhoneType] = useState<string>("")
+
+    const [phone, setPhone] = useState<string>("")
     const [state, setState] = useState("")
     const [suburb, setSuburb] = useState("")
     const [zipCode, setZipCode] = useState("")
@@ -65,11 +62,15 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
     //---Options Handler
     //------------------------------
     useEffect(() => {
-        setCountryCode(country_code)
-        setState(current_state)
-        setSuburb(current_suburb)
-        setZipCode(current_zipCode)
-        setAddress(current_address)
+        setCountryCode(currentAddress.countryCode)
+        setPhoneCode(currentAddress.phoneCode)
+        setPhone(currentAddress.phone)
+        setStateOptions([])
+        setState(currentAddress.state)
+        setSuburbOptions([])
+        setSuburb(currentAddress.suburb)
+        setZipCode(currentAddress.zipCode)
+        setAddress(currentAddress.address)
     },[isVisible])
 
     //---States Option
@@ -87,9 +88,11 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
     }
 
     useEffect(() => {
-        if (countryCode) {
-            statesInitiate(countryCode)
-        }
+        statesInitiate(countryCode)
+
+        const selectedCountry = countriesInfo.find((item) => item.code === countryCode)
+        setPhoneCode(selectedCountry?.phoneCode)
+        setPhoneType(selectedCountry?.phoneType)
     }, [countryCode])
     
     useEffect(() => {
@@ -131,6 +134,9 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
     //------------------------------
     const saveHandler = () => {
         onSave({
+          countryCode,
+          phoneCode,
+          phone,
           state,
           suburb,
           zipCode,
@@ -144,7 +150,7 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
             title={
                 <BoxHeader style={{width: "25vw", marginLeft: "1vw"}}>
                     <YellowLine>
-                        <Header>Edit Address</Header>
+                        <Header>Edit Extra Address</Header>
                     </YellowLine>
                 </BoxHeader>
             }
@@ -155,7 +161,7 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
             footer={[
                 <Button
                     variant="solid"
-                    size="smal"
+                    size="large"
                     style={{
                         width: "8vw",
                         fontFamily: "Montserrat",
@@ -213,13 +219,16 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
                     </Title>
                     <Select
                         showSearch
-                        value={country_code}
+                        value={countryCode}
                         optionFilterProp="label"
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        disabled={!countriesOptions || countriesOptions.length === 0}
-                        options={countriesOptions}
+                        disabled={!countriesInfo || countriesInfo.length === 0}
+                        options={countriesInfo.map((country) => ({
+                            value: country.code,
+                            label: country.name
+                        }))}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => {
                             setCountryCode(value)
@@ -228,7 +237,24 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
                           }}
                     />
                 </BoxContent>
-                <BoxContent style={{ width: "30vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
+                    <Title style={{width: "5vw"}}>
+                        Phone:
+                    </Title>
+                    <Input
+                        addonBefore={phoneCode}
+                        placeholder={phoneType}
+                        value={phone}
+                        maxLength={10}
+                        style={{width: "15vw"}}
+                        onChange={(e) => {
+                        const input = e.target.value
+                            if (/^\d*$/.test(input)) {
+                            setPhone(input)
+                        }}}
+                    />
+                </BoxContent>
+                <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
                     <Title style={{width: "4vw"}}>
                         State:
                     </Title>
@@ -239,7 +265,6 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        disabled={!stateOptions || stateOptions.length === 0}
                         options={stateOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => setState(value)}
@@ -265,7 +290,6 @@ export const EditAddressModal: React.FC<CustomModalProps> = ({
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                         }
-                        disabled={!suburbOptions || suburbOptions.length === 0}
                         options={suburbOptions}
                         style={{width: "15vw", marginLeft: "1vw"}}
                         onChange={(value) => setSuburb(value)}

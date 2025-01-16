@@ -131,7 +131,6 @@ export const AddressModal: React.FC<CustomModalProps> = ({
     //------------------------------
     return (
         <Modal
-            // title={title}
             title={
                 <BoxHeader style={{width: "25vw", marginLeft: "1vw"}}>
                     <YellowLine>
@@ -140,6 +139,9 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                 </BoxHeader>
             }
             open={isVisible}
+            centered={centered}
+            onCancel={onCancel}
+            width={"35vw"}
             footer={[
                 <Button
                     variant="solid"
@@ -176,7 +178,6 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     Save
                 </Button>
         ]}
-            centered={centered}
         >
             <CustomBox>
                 <BoxContent style={{ width: "30vw", marginTop: "1vw", marginLeft: "1vw", justifyContent: "flex-start"}}>
@@ -264,7 +265,7 @@ export const AddressModal: React.FC<CustomModalProps> = ({
                     <Input
                         placeholder=""
                         value={address}
-                        style={{width: "15vw"}}
+                        style={{width: "25vw"}}
                         onChange={(e) => setAddress(e.target.value)}
                     />
                 </BoxContent>
