@@ -7,9 +7,11 @@ import {
     Select
 } from 'antd'
 
+import { UploadFile }   from "src/components/core/Upload"
 import { CustomBox }    from "src/components/core/CustomBox"
 import { Color }        from "src/definition/color"
 import { IndividualDocuments }  from "src/definition/const"
+
 
 import {
     BoxContent,
@@ -126,6 +128,7 @@ export const IndvDocumentModal: React.FC<CustomModalProps> = ({
                             setDocument(value)
                           }}
                     />
+                    <UploadFile />
                 </BoxContent>
            </CustomBox>
         </Modal>
