@@ -1,57 +1,61 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
-import { EditableTable }    from "src/components/core/Table/EditableTable"
-import { FormatNumber }     from "src/components/common/format"
+import { EditableTable } from "src/components/core/Table/EditableTable";
+import { FormatNumber } from "src/components/common/format";
 
-import { SpecialRateType } from "src/definition/interfaces"
+import { SpecialRateType } from "src/definition/interfaces";
 
 //------------------------------
 interface BaseRateProc {
-  onChange: (data: SpecialRateType[]) => void
-  data: SpecialRateType[]
+  onChange: (data: SpecialRateType[]) => void;
+  data: SpecialRateType[];
 }
 
 //------------------------------
 //---Special Rate Table
 //------------------------------
-export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => { 
- const [dataSource, setDataSource] = useState<SpecialRateType[]>([])
+export const SpecialRateTable: React.FC<BaseRateProc> = ({ onChange, data }) => {
+  const [dataSource, setDataSource] = useState<SpecialRateType[]>([]);
 
   useEffect(() => {
     if (data.length > 0) {
-      setDataSource(data)
+      setDataSource(data.map((item) => ({ ...item, isInitial: true })));
     } else {
-      setDataSource([{ key: "defaultRow", amount: 2000, over: 0 }])
+      setDataSource([{ key: "defaultRow", amount: 2000, over: 0, isInitial: true }]);
     }
-  }, [data])
+  }, [data]);
 
   //------------------------------
   const handleAdd = () => {
     const newRow = {
       key: Date.now(),
       amount: 2000,
-      over: 0
-    }
-    setDataSource([...dataSource, newRow])
-  }
+      over: 0,
+      isInitial: false, 
+    };
+    setDataSource([...dataSource, newRow]);
+  };
 
   //------------------------------
   const handleUpdate = (updatedRow: SpecialRateType) => {
     const updateData = dataSource.map((row) =>
       row.key === updatedRow.key ? { ...updatedRow } : row
-    )
-     setDataSource(updateData)
+    );
+    setDataSource(updateData);
 
     //---Send Special Rate to Parent
-    const extractedData: SpecialRateType[] = updateData.map(({ amount, over, rate }) => ({ amount, over, rate}))
-    onChange(extractedData)
-  }
+    const extractedData: SpecialRateType[] = updateData.map(({ amount, over, rate }) => ({
+      amount,
+      over,
+      rate,
+    }));
+    onChange(extractedData);
+  };
 
   //------------------------------
   const handleDelete = (key: React.Key) => {
-    if (key === "defaultRow") return
-    setDataSource((prev) => prev.filter((item) => item.key !== key))
-  }
+    setDataSource((prev) => prev.filter((item) => item.key !== key || item.isInitial));
+  };
 
   //------------------------------
   const columns = [
@@ -61,7 +65,7 @@ export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => {
       editable: true,
       width: "10vw",
       align: "center",
-      render: (value: number) => FormatNumber(value, 0)
+      render: (value: number) => FormatNumber(value, 0),
     },
     {
       title: "Over",
@@ -69,14 +73,15 @@ export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => {
       editable: true,
       width: "10vw",
       align: "center",
-      render: (value: number) => FormatNumber(value, 0)
+      render: (value: number) => FormatNumber(value, 0),
     },
     {
       title: "",
       dataIndex: "action",
-      render: (_: any, record: SpecialRateType) => (
-        <a onClick={() => handleDelete(record.key)}>-</a>
-      ),
+      render: (_: any, record: SpecialRateType) =>
+        !record.isInitial && (
+          <a onClick={() => handleDelete(record.key)}>-</a>
+        ), 
     },
     {
       title: "",
@@ -84,8 +89,8 @@ export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => {
       render: (_: any, record: SpecialRateType) => (
         <a onClick={() => handleAdd()}>+</a>
       ),
-    }
-  ]
+    },
+  ];
 
   //------------------------------
   return (
@@ -97,5 +102,5 @@ export const SpecialRateTable: React.FC <BaseRateProc> = ({onChange, data}) => {
       onRowDelete={handleDelete}
       onAddRow={handleAdd}
     />
-  )
-}
+  );
+};
